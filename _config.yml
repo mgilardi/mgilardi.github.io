@@ -1,19 +1,24 @@
 # Site settings
-title: Mauricio Urraco
-description: Jekyll Theme Minimal Resume
-# baseurl: "" # the subpath of your site, e.g. /blog
-# url: "localhost:3000" # the base hostname & protocol for your site e.g. http://willianjusten.com.br
+title: Michael Gilardi
+description: Senior Software Engineer | Salesforce Developer | Michael Gilardi
+baseurl: "" # the subpath of your site, e.g. /blog
+domain: "http://mgilardi.github.io" # if you want to force HTTPS, specify the domain without the http at the start, e.g. example.com
+url: "http://mgilardi.github.io" # the base hostname & protocol for your site, e.g. http://example.com
 
 # User settings
-username: Mauricio Urraco
-user_description: I'm a Software Engineer from Argentina, always searching for the next challenge; no task is too scary nor too difficult. Lately I have been immersed in world of Giving Circles working with Grapevine, a California based startup trying to improve the world through collaborative giving. I'm the first engineer they hired to work on the platform.
-user_title: Software Engineer
-email: mauriurraco@gmail.com
+username: Michael Gilardi
+user_description: Michael Gilardi is a full stack software engineer specializing in Salesforce development. In his spare time, he enjoys exploring extraneous technological rabbit holes.
+user_title: Senior Software Engineer
+# email: mdgilardi@gmail.com
 # twitter_username: lorem_ipsum
-instagram_username: mauriciourraco7
-facebook_username: mauricio.urraco
-linkedin_username: murraco
-github_username:  murraco
+# instagram_username: lorem_ipsum
+# facebook_username: lorem_ipsum
+linkedin_username: mdgilardi
+github_username:  mgilardi
+salesforce_username: mgilardi
+asu_profile_urL: https://search.asu.edu/profile/1467777
+business_name: Cyber Sonoran
+business_url: https://cybersonoran.com
 # medium_username: lorem_ipsum
 # medium_url: lorem_ipsum.medium.com
 # gplus_username:  lorem_ipsum
