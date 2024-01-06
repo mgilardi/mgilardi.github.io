@@ -9,19 +9,12 @@ url: "http://mgilardi.github.io" # the base hostname & protocol for your site, e
 username: Michael Gilardi
 user_description: Michael Gilardi is a full stack software engineer specializing in Salesforce development. In his spare time, he enjoys exploring extraneous technological rabbit holes.
 user_title: Senior Software Engineer
-# email: mdgilardi@gmail.com
-# twitter_username: lorem_ipsum
-# instagram_username: lorem_ipsum
-# facebook_username: lorem_ipsum
 linkedin_username: mdgilardi
 github_username:  mgilardi
 salesforce_username: mgilardi
 asu_profile_urL: https://search.asu.edu/profile/1467777
 business_name: Cyber Sonoran
 business_url: https://cybersonoran.com
-# medium_username: lorem_ipsum
-# medium_url: lorem_ipsum.medium.com
-# gplus_username:  lorem_ipsum
 
 exclude: ['package.json', 'src', 'node_modules', 'vendor']
 
