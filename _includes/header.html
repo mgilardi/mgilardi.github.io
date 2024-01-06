@@ -13,12 +13,12 @@
         {% endif %}
         {% if site.salesforce_username %}
         <a aria-label="My Salesforce" target="_blank" href="https://www.salesforce.com/trailblazer/{{ site.salesforce_username }}"><i class="icon fa-brands fa-salesforce" aria-hidden="true"></i></a>
-        {% elsif site.business_url %}
+        {% if site.business_name %}
         <a aria-label="{{ site.business_name }}" target="_blank" href="https://{{ site.business_url }}"><i class="icon fa-solid fa-gear" aria-hidden="true"></i></a>
         {% endif %}
       </div>
       <div class="header-links">
-        <!-- <a class="link" href="#about" data-scroll>About Me</a> -->
+        <a class="link" href="#about" data-scroll>{{ site.user_description_title }}</a>
       </div>
   </div>
   <a class="down" href="#about" data-scroll><i class="icon fa fa-chevron-down" aria-hidden="true"></i></a>
