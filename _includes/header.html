@@ -11,6 +11,9 @@
         {% if site.github_username %}
         <a aria-label="My Github" target="_blank" href="https://github.com/{{ site.github_username }}"><i class="icon fa-brands fa-github-alt" aria-hidden="true"></i></a>
         {% endif %}
+        {% if site.asu_profile_url %}
+        <a aria-label="My ASU Profile" target="_blank" href="https://{{ site.asu_profile_url }}"><i class="icon fa-solid fa-briefcase" aria-hidden="true"></i></a>
+        {% endif %}
         {% if site.salesforce_username %}
         <a aria-label="My Salesforce" target="_blank" href="https://www.salesforce.com/trailblazer/{{ site.salesforce_username }}"><i class="icon fa-brands fa-salesforce" aria-hidden="true"></i></a>
         {% endif %}
