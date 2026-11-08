@@ -6,7 +6,7 @@ Recorded so later work follows them without asking again.
 
 - **Projects first.** The page leads with a short intro, then the public projects grouped as Mac apps, Minecraft plugins, science tools and Payload plugins. The old résumé template (particles header, skill logos, work-history stub) is gone.
 - **Astro**, static output only, no client-side JavaScript. Deployed by `.github/workflows/site.yml` to GitHub Pages. The Pages source has to be set to "GitHub Actions" when this first merges.
-- **Links kept:** GitHub, LinkedIn, Salesforce Trailblazer, ASU profile. The old business link was dropped.
+- **Links kept:** GitHub, LinkedIn, Salesforce Trailblazer, university profile. The old business link was dropped.
 - **npm:** linked as the `@captiveorigins` scope from the science tools and Payload plugins sections, not as a header link.
 - **Go-live:** built on a branch and previewed first. Nothing merges to `main` without the owner's OK.
 - **Name:** this is the one place the owner's personal name may appear. Family names, finances and other personal details stay out.
