@@ -17,5 +17,9 @@ Recorded so later work follows them without asking again.
 ## 2026-11-08: owner's review
 
 - **Projects come from GitHub automatically.** Every public, non-fork, non-archived repo in the ExtantApe and CaptiveOrigins orgs is listed, read from the GitHub API at build time. The workflow rebuilds and deploys daily, so new repos and changed descriptions appear within a day. If GitHub can't be reached, the build fails and the live site stays as it was. To hide a public repo, add its name to `EXCLUDE` in `src/data/projects.ts`.
-- **Grouping** uses repo names and topics: `macos` is Mac apps, `minecraft` is Minecraft plugins, `one<thing>` is science tools, `payload-plugin` is Payload plugins, anything else is Other. Within a group, the most recently pushed comes first. Science tools always say "Source-available", never "open source".
+- **Grouping** uses repo names and topics: `macos` is Mac apps, `minecraft` is Minecraft plugins, `one<thing>` is science tools, `payload-plugin` is Payload plugins, anything else is Other. Science tools always say "Source-available", never "open source".
 - **Intro** is the owner's own Long Bio from the owner's university directory profile, word for word. Only the bio paragraphs are used, not the contact details on that page.
+
+## 2026-11-08: stable order
+
+- **Alphabetical within each section**, by displayed name, ignoring case and a leading "The", so the order doesn't change from one build to the next. The rule lives in `src/data/order.mjs`. `scripts/check-order.mjs` runs as part of `npm run build`, in CI too, and fails if any section on the built page is out of order. Supersedes "most recently pushed first" above.
