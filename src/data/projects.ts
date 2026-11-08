@@ -1,3 +1,5 @@
+import { compareNames } from './order.mjs';
+
 // The projects on the home page are read from GitHub at build time: every public,
 // non-fork, non-archived repo in the orgs below. A scheduled workflow rebuilds the
 // site daily, so new repos and changed descriptions show up without editing this file.
@@ -162,14 +164,14 @@ if (repos.length === 0) {
   throw new Error('GitHub returned no public repos; refusing to build an empty project list.');
 }
 
-// Most recently worked on first, within each group.
-repos.sort((a, b) => b.pushed_at.localeCompare(a.pushed_at));
-
 const filled: ProjectGroup[] = RULES.map(({ test: _test, ...g }) => ({ ...g, projects: [] }));
 for (const repo of repos) {
   const i = RULES.findIndex((g) => g.test(repo));
   filled[i].projects.push({ ...split(repo), url: repo.html_url, facts: facts(repo, RULES[i].id) });
 }
+
+// Alphabetical within each section, so the order is the same from one build to the next.
+for (const g of filled) g.projects.sort((a, b) => compareNames(a.name, b.name));
 
 /** Groups with at least one project, in page order. */
 export const groups = filled.filter((g) => g.projects.length > 0);
