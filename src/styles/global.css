@@ -1,0 +1,101 @@
+/* Light and dark follow the system setting. Every text colour pair meets WCAG AA (4.5:1) or better. */
+:root {
+  --bg: #fbfaf7;
+  --surface: #ffffff;
+  --text: #1c1f1e;
+  --muted: #4d5552;
+  --line: #dcdcd5;
+  --accent: #1f5f4a;
+  --accent-hover: #164535;
+  --chip-bg: #eef1ec;
+  --focus: #b35c00;
+  --measure: 68ch;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.6;
+  color: var(--text);
+  background: var(--bg);
+  text-size-adjust: 100%;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #141716;
+    --surface: #1c201f;
+    --text: #e8ebe9;
+    --muted: #b1b9b5;
+    --line: #333a37;
+    --accent: #7fd3b0;
+    --accent-hover: #a6e4c9;
+    --chip-bg: #26302c;
+    --focus: #ffb15c;
+  }
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+body { margin: 0; }
+img, svg { max-width: 100%; }
+
+a { color: var(--accent); text-underline-offset: 0.2em; text-decoration-thickness: 1px; }
+a:hover { color: var(--accent-hover); text-decoration-thickness: 2px; }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; border-radius: 2px; }
+main:focus { outline: none; }
+
+.wrap { max-width: 72rem; margin: 0 auto; padding: 0 1.25rem; }
+
+.skip-link {
+  position: absolute; left: 1rem; top: -4rem; z-index: 10;
+  background: var(--surface); color: var(--text); padding: 0.6rem 1rem;
+  border: 2px solid var(--focus); border-radius: 6px;
+}
+.skip-link:focus { top: 1rem; }
+
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+/* Header */
+.site-header { padding: clamp(3rem, 10vw, 6rem) 0 2.5rem; border-bottom: 1px solid var(--line); }
+.site-header h1 { font-size: clamp(2.2rem, 6vw, 3.4rem); line-height: 1.1; margin: 0 0 1rem; letter-spacing: -0.02em; }
+.lede { font-size: clamp(1.1rem, 2.4vw, 1.3rem); max-width: var(--measure); margin: 0 0 1.5rem; color: var(--muted); }
+.links, .toc ul, .cards, .facts { list-style: none; margin: 0; padding: 0; }
+.links { display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; font-weight: 600; }
+.links a { display: inline-block; padding: 0.25rem 0; }
+
+/* Project index */
+.toc { position: sticky; top: 0; z-index: 5; background: var(--bg); border-bottom: 1px solid var(--line); margin: 0 -1.25rem; padding: 0 1.25rem; }
+.toc ul { display: flex; flex-wrap: wrap; gap: 0 1.25rem; }
+.toc a { display: inline-block; padding: 0.6rem 0; text-decoration: none; font-weight: 600; white-space: nowrap; }
+.toc a:hover { text-decoration: underline; }
+.count { color: var(--muted); font-weight: 400; font-variant-numeric: tabular-nums; }
+
+/* Groups */
+.group { padding: 3rem 0 1rem; scroll-margin-top: 3.5rem; }
+.group-head { max-width: var(--measure); margin-bottom: 1.5rem; }
+.group-head h2 { font-size: 1.6rem; margin: 0 0 0.4rem; letter-spacing: -0.01em; }
+.group-head p { margin: 0 0 0.4rem; color: var(--muted); }
+.more a { font-weight: 600; }
+
+.cards { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr)); }
+.card {
+  position: relative; display: flex; flex-direction: column;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 1.1rem 1.25rem;
+}
+.card:hover { border-color: var(--accent); }
+.card h3 { font-size: 1.15rem; margin: 0 0 0.35rem; }
+.card h3 a { text-decoration: none; }
+/* The whole card is clickable through the heading link, so screen readers hear one link per card. */
+.card h3 a::after { content: ''; position: absolute; inset: 0; border-radius: 10px; }
+.card h3 a:focus-visible { outline: none; }
+.card:has(h3 a:focus-visible) { outline: 3px solid var(--focus); outline-offset: 3px; }
+.card p { margin: 0 0 0.75rem; flex: 1; }
+.facts { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.facts li { font-size: 0.85rem; background: var(--chip-bg); color: var(--text); padding: 0.1rem 0.55rem; border-radius: 999px; }
+
+/* Footer */
+.site-footer { margin-top: 3rem; padding: 2rem 0 3rem; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.95rem; }
+.site-footer p { margin: 0 0 0.4rem; }
+
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+}

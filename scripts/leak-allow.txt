@@ -1,0 +1,13 @@
+# Public phrases this site shows on purpose. A hit line containing one of these passes.
+# This is the owner's personal site, the one place his name may appear (decision 2026-11-07, docs/decisions.md).
+Michael Gilardi
+mgilardi.github.io
+mgilardi-github-io
+github.com/mgilardi
+linkedin.com/in/mdgilardi
+search.asu.edu/profile/1467777
+github.com/ExtantApe
+github.com/CaptiveOrigins
+npmjs.com/org/captiveorigins
+salesforce.com/trailblazer/mgilardi
+@captiveorigins

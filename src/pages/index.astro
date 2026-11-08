@@ -1,0 +1,72 @@
+---
+import Base from '../layouts/Base.astro';
+import { groups, links } from '../data/projects';
+
+const name = 'Michael Gilardi';
+const description =
+  'Software engineer. Mac apps, Minecraft plugins, Payload CMS plugins and frameworks for biological data, most of them free to use.';
+const year = new Date().getFullYear();
+---
+
+<Base title={name} description={description}>
+  <header class="site-header">
+    <div class="wrap">
+      <h1>{name}</h1>
+      <p class="lede">
+        Software engineer. My day job has mostly been full-stack Salesforce work. On my own time I
+        build small tools: Mac apps, Minecraft plugins, plugins for the Payload CMS, and
+        frameworks for biological data.
+      </p>
+      <nav aria-label="Elsewhere">
+        <ul class="links">
+          {links.map((l) => (
+            <li><a href={l.url} rel="me">{l.label}</a></li>
+          ))}
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" tabindex="-1">
+    <div class="wrap">
+      <nav class="toc" aria-label="Projects">
+        <h2 class="visually-hidden">Projects</h2>
+        <ul>
+          {groups.map((g) => (
+            <li><a href={`#${g.id}`}>{g.title} <span class="count">{g.projects.length}</span></a></li>
+          ))}
+        </ul>
+      </nav>
+
+      {groups.map((g) => (
+        <section class="group" id={g.id} aria-labelledby={`${g.id}-title`}>
+          <div class="group-head">
+            <h2 id={`${g.id}-title`}>{g.title}</h2>
+            <p>{g.intro}</p>
+            {g.more && <p class="more"><a href={g.more.url}>{g.more.label}</a></p>}
+          </div>
+          <ul class="cards">
+            {g.projects.map((p) => (
+              <li class="card">
+                <h3><a href={p.url}>{p.name}</a></h3>
+                <p>{p.description}</p>
+                {p.facts && (
+                  <ul class="facts" aria-label="Details">
+                    {p.facts.map((f) => <li>{f}</li>)}
+                  </ul>
+                )}
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))}
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>© {year} {name}. Built with Astro, hosted on GitHub Pages. No tracking, no cookies.</p>
+      <p><a href="https://github.com/mgilardi/mgilardi.github.io">Source for this site</a></p>
+    </div>
+  </footer>
+</Base>
