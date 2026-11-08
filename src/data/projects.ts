@@ -1,12 +1,14 @@
-// The projects shown on the home page, grouped.
-// Descriptions follow each repo's own GitHub description; when one changes there, change it here too.
+// The projects on the home page are read from GitHub at build time: every public,
+// non-fork, non-archived repo in the orgs below. A scheduled workflow rebuilds the
+// site daily, so new repos and changed descriptions show up without editing this file.
+// If GitHub can't be reached, the build fails rather than publishing an empty list.
 
 export interface Project {
   name: string;
   url: string;
   description: string;
   /** Short facts shown under the description, such as the license or platform. */
-  facts?: string[];
+  facts: string[];
 }
 
 export interface ProjectGroup {
@@ -18,172 +20,161 @@ export interface ProjectGroup {
   projects: Project[];
 }
 
-export const groups: ProjectGroup[] = [
+interface Repo {
+  name: string;
+  html_url: string;
+  description: string | null;
+  fork: boolean;
+  archived: boolean;
+  private: boolean;
+  topics?: string[];
+  license: { spdx_id: string } | null;
+  pushed_at: string;
+}
+
+const ORGS = ['ExtantApe', 'CaptiveOrigins'];
+
+/** Public repos to leave off the site anyway. Use the exact repo name. */
+const EXCLUDE = new Set<string>([]);
+
+const npmScope = { label: '@captiveorigins on npm', url: 'https://www.npmjs.com/org/captiveorigins' };
+
+type GroupRule = Omit<ProjectGroup, 'projects'> & { test: (r: Repo) => boolean };
+
+// Groups in page order. A repo goes in the first group whose test it passes.
+const RULES: GroupRule[] = [
   {
     id: 'mac',
     title: 'Mac apps',
     intro: 'Small native apps that do one job and ask before they change anything.',
-    projects: [
-      {
-        name: 'Theseus',
-        url: 'https://github.com/ExtantApe/theseus',
-        description:
-          'A private, never-sends personal assistant for Claude Code on your Mac. Clears the path, so you can make the call.',
-        facts: ['MIT', 'Tauri'],
-      },
-      {
-        name: 'Ariadne',
-        url: 'https://github.com/ExtantApe/ariadne',
-        description:
-          "Keep your Mac's files and Apple Notes filed, with a yes. Never deletes or overwrites; every batch can be undone.",
-        facts: ['MIT', 'Tauri'],
-      },
-      {
-        name: 'Leaf Juice',
-        url: 'https://github.com/ExtantApe/leaf-juice',
-        description:
-          'A free, native Mac app for running Minecraft Java servers: lean, safe upgrades, plugin compatibility and clear problem reports.',
-        facts: ['MIT', 'SwiftUI'],
-      },
-    ],
+    test: (r) => has(r, 'macos'),
   },
   {
     id: 'minecraft',
     title: 'Minecraft plugins',
-    intro: 'Plugins for Minecraft servers, mostly Paper. No client mods needed.',
-    projects: [
-      {
-        name: 'BlueMapHUD',
-        url: 'https://github.com/ExtantApe/BlueMapHUD',
-        description:
-          'A BlueMap minimap and coordinates HUD for Paper, with a fullscreen map, drawn with a resource pack font. No client mods or shaders.',
-        facts: ['MIT', 'Paper'],
-      },
-      {
-        name: 'Waystation',
-        url: 'https://github.com/ExtantApe/Waystation',
-        description:
-          'Walkable gates between Multiverse worlds for Paper: a generated train station built from display entities, so it never places a block. No client mods.',
-        facts: ['MIT', 'Paper'],
-      },
-      {
-        name: 'Latchkey',
-        url: 'https://github.com/ExtantApe/Latchkey',
-        description:
-          'One-time sign-in links for Paper servers: a player types /signin and their browser is signed in, with no password. Only a hash of each link is stored.',
-        facts: ['MIT', 'Paper'],
-      },
-      {
-        name: 'Preflight',
-        url: 'https://github.com/ExtantApe/Preflight',
-        description:
-          'Boot-time smoke tests for servers: holds logins until tests pass, and lets plugins add their own tests.',
-        facts: ['MIT'],
-      },
-    ],
+    intro: 'Plugins for Minecraft servers, mostly Paper.',
+    test: (r) => has(r, 'minecraft'),
   },
   {
     id: 'science',
     title: 'Science tools',
     intro:
       'The OneOrigin suite: frameworks for lineage, pedigree and taxonomy data. Source-available under PolyForm Noncommercial 1.0.0.',
-    more: { label: '@captiveorigins on npm', url: 'https://www.npmjs.com/org/captiveorigins' },
-    projects: [
-      {
-        name: 'OnePhylogeny',
-        url: 'https://github.com/CaptiveOrigins/onephylogeny',
-        description:
-          'A species-agnostic framework for acquiring sequence evidence, building reference panels and placing samples in lineages, with provenance and honest uncertainty.',
-        facts: ['Source-available', 'TypeScript', 'Alpha'],
-      },
-      {
-        name: 'OnePedigree',
-        url: 'https://github.com/CaptiveOrigins/onepedigree',
-        description:
-          'A species-neutral pedigree framework, with a data model, validation, bounded traversal, 13 views and layout, plus packages for React and Payload.',
-        facts: ['Source-available', 'TypeScript', 'Alpha'],
-      },
-      {
-        name: 'OneTaxonomy',
-        url: 'https://github.com/CaptiveOrigins/onetaxonomy',
-        description:
-          'Import, curate, browse and publish taxonomic classifications and phylogenetic trees, with a TypeScript core, React components, a Payload plugin and a desktop studio.',
-        facts: ['Source-available', 'TypeScript', 'Alpha'],
-      },
-    ],
+    more: npmScope,
+    test: (r) => /^one[a-z]+$/.test(r.name),
   },
   {
     id: 'payload',
     title: 'Payload plugins',
-    intro: 'Plugins for the Payload CMS, published on npm. Still 0.x until they have seen more real use.',
-    more: { label: '@captiveorigins on npm', url: 'https://www.npmjs.com/org/captiveorigins' },
-    projects: [
-      {
-        name: 'Masquerade',
-        url: 'https://github.com/CaptiveOrigins/payload-plugin-masq',
-        description:
-          'Admins sign in as another user, read-only, to see what they see, with a banner, a one-hour session, an admin-only user search and audit hooks.',
-        facts: ['MIT'],
-      },
-      {
-        name: 'Sandbox',
-        url: 'https://github.com/CaptiveOrigins/payload-plugin-sandbox',
-        description:
-          'Realistic test data that reads your schema, fills every collection so each case appears, tracks every record for one-click removal, and refuses to run in production.',
-        facts: ['MIT'],
-      },
-      {
-        name: 'Polyglot',
-        url: 'https://github.com/CaptiveOrigins/payload-plugin-polyglot',
-        description:
-          'Keeps content in every language, translating on publish and in a sweep, remembering every sentence, and never overwriting a human-reviewed translation.',
-        facts: ['MIT'],
-      },
-      {
-        name: 'Roles',
-        url: 'https://github.com/CaptiveOrigins/payload-plugin-roles',
-        description:
-          'Per-site role ladders for multi-tenant sites, plus add-on and platform roles, per-site role names and access helpers.',
-        facts: ['MIT'],
-      },
-      {
-        name: 'Menu',
-        url: 'https://github.com/CaptiveOrigins/payload-plugin-menu',
-        description:
-          "Drag-and-drop links, dropdowns and section headings, optional icons, alphabetical order in each visitor's language, and visibility per entry.",
-        facts: ['MIT'],
-      },
-      {
-        name: 'Roadmap',
-        url: 'https://github.com/CaptiveOrigins/payload-plugin-roadmap',
-        description:
-          'A public roadmap with voting: items in curator-set stages, one vote per person per item, deduplicated requests and parent grouping.',
-        facts: ['MIT'],
-      },
-      {
-        name: 'Membership',
-        url: 'https://github.com/CaptiveOrigins/payload-plugin-membership',
-        description:
-          'Patreon-style tiers or pick-your-own-amount pledges, billed as Stripe subscriptions, with a backers wall and hooks for perks.',
-        facts: ['MIT'],
-      },
-      {
-        name: 'Sponsors',
-        url: 'https://github.com/CaptiveOrigins/payload-plugin-sponsors',
-        description:
-          'A public sponsor list with optional tiers, private contacts, and sponsor updates written and sent from the admin.',
-        facts: ['MIT'],
-      },
-      {
-        name: 'Printify',
-        url: 'https://github.com/CaptiveOrigins/payload-plugin-printify',
-        description:
-          "Print-on-demand for Payload's ecommerce plugin, with product sync, order fulfillment and tracking, and optional price write-back.",
-        facts: ['MIT'],
-      },
-    ],
+    intro: 'Plugins for the Payload CMS. The published ones are on npm under @captiveorigins.',
+    more: npmScope,
+    test: (r) => has(r, 'payload-plugin'),
+  },
+  {
+    id: 'other',
+    title: 'Other',
+    intro: 'Everything else that is public.',
+    test: () => true,
   },
 ];
+
+// Topic → the platform chip shown on a card. First match wins.
+const PLATFORMS: [string, string][] = [
+  ['tauri', 'Tauri'],
+  ['swiftui', 'SwiftUI'],
+  ['papermc', 'Paper'],
+  ['paper-plugin', 'Paper'],
+  ['paper', 'Paper'],
+];
+
+function has(r: Repo, topic: string) {
+  return (r.topics ?? []).includes(topic);
+}
+
+async function fetchRepos(org: string): Promise<Repo[]> {
+  const headers: Record<string, string> = {
+    Accept: 'application/vnd.github+json',
+    'User-Agent': 'mgilardi.github.io-build',
+  };
+  const token = process.env.GITHUB_TOKEN;
+  if (token) headers.Authorization = `Bearer ${token}`;
+
+  const repos: Repo[] = [];
+  for (let page = 1; ; page++) {
+    const res = await fetch(
+      `https://api.github.com/orgs/${org}/repos?type=public&per_page=100&page=${page}`,
+      { headers },
+    );
+    if (!res.ok) throw new Error(`GitHub API ${res.status} listing ${org} repos: ${await res.text()}`);
+    const batch = (await res.json()) as Repo[];
+    repos.push(...batch);
+    if (batch.length < 100) return repos;
+  }
+}
+
+const squash = (s: string) => s.toLowerCase().replace(/[^a-z0-9]/g, '');
+const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+
+/**
+ * The card's name comes from the repo name. A description that opens with the repo's own name
+ * ("OnePhylogeny: a framework…") lends its spelling and loses the prefix. Payload plugins drop
+ * their "Menus for Payload:" opener, since the section already says Payload.
+ */
+function split(repo: Repo): { name: string; description: string } {
+  let desc = (repo.description ?? '').trim();
+  const base = repo.name.replace(/^payload-plugin-/, '');
+  let name = displayName(base);
+
+  const own = desc.match(/^([^:]{1,40}):\s+(.+)$/s);
+  if (own && squash(own[1]) === squash(repo.name)) {
+    name = own[1];
+    desc = own[2];
+  } else if (repo.name.startsWith('payload-plugin-')) {
+    desc = desc.replace(/^[A-Z][\w-]*(?: [A-Z][\w-]*)* for Payload:\s+/, '');
+  }
+  return { name, description: capitalize(desc) || 'No description yet.' };
+}
+
+/** "leaf-juice" → "Leaf Juice". Names with capitals, like "BlueMapHUD", stay as they are. */
+function displayName(repo: string) {
+  if (/[A-Z]/.test(repo)) return repo;
+  return repo
+    .split('-')
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(' ');
+}
+
+function facts(repo: Repo, groupId: string): string[] {
+  const out: string[] = [];
+  const spdx = repo.license?.spdx_id;
+  if (groupId === 'science') out.push('Source-available');
+  else if (spdx && spdx !== 'NOASSERTION') out.push(spdx);
+  const platform = PLATFORMS.find(([t]) => has(repo, t));
+  if (platform) out.push(platform[1]);
+  return out;
+}
+
+const repos = (await Promise.all(ORGS.map(fetchRepos)))
+  .flat()
+  .filter((r) => !r.private && !r.fork && !r.archived && !r.name.startsWith('.') && !EXCLUDE.has(r.name));
+
+if (repos.length === 0) {
+  throw new Error('GitHub returned no public repos; refusing to build an empty project list.');
+}
+
+// Most recently worked on first, within each group.
+repos.sort((a, b) => b.pushed_at.localeCompare(a.pushed_at));
+
+const filled: ProjectGroup[] = RULES.map(({ test: _test, ...g }) => ({ ...g, projects: [] }));
+for (const repo of repos) {
+  const i = RULES.findIndex((g) => g.test(repo));
+  filled[i].projects.push({ ...split(repo), url: repo.html_url, facts: facts(repo, RULES[i].id) });
+}
+
+/** Groups with at least one project, in page order. */
+export const groups = filled.filter((g) => g.projects.length > 0);
+
+export const builtAt = new Date();
 
 export const links = [
   { label: 'GitHub', url: 'https://github.com/mgilardi' },
