@@ -11,3 +11,5 @@ github.com/CaptiveOrigins
 npmjs.com/org/captiveorigins
 salesforce.com/trailblazer/mgilardi
 @captiveorigins
+ExtantApe and CaptiveOrigins
+['ExtantApe', 'CaptiveOrigins']

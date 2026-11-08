@@ -6,7 +6,7 @@ It's a static Astro site with no client-side JavaScript, no tracking and no cook
 
 ## Editing
 
-The project list lives in `src/data/projects.ts`. Descriptions follow each repo's GitHub description, so when one changes there, change it here too. The page itself is `src/pages/index.astro` and the styles are in `src/styles/global.css`. Light and dark follow the system setting.
+The project list isn't written by hand. At build time `src/data/projects.ts` asks GitHub for every public repo in the ExtantApe and CaptiveOrigins orgs and groups them by topic. To change what a card says, change that repo's description or topics on GitHub. The site picks it up at the next daily build. To leave a public repo off, add it to `EXCLUDE` in the same file. The page itself is `src/pages/index.astro` and the styles are in `src/styles/global.css`. Light and dark follow the system setting.
 
 ## Build
 
@@ -21,7 +21,7 @@ npm run leak-check # emails, build output, and private terms if ~/.leak-private-
 
 ## Deploy
 
-A push to `main` runs the leak check (emails and build output only; private terms are checked locally) and a build, then deploys to GitHub Pages. Pull requests run the same checks without deploying.
+A push to `main` runs the leak check (emails and build output only; private terms are checked locally) and a build, then deploys to GitHub Pages. The same thing runs every morning at 06:17 Arizona time, so the project list stays current. If GitHub's API can't be reached, the build fails and the live site is left alone. Pull requests run the same checks without deploying.
 
 Decisions about the site are in `docs/decisions.md`.
 

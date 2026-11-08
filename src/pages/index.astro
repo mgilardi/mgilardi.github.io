@@ -1,10 +1,11 @@
 ---
 import Base from '../layouts/Base.astro';
-import { groups, links } from '../data/projects';
+import { groups, links, builtAt } from '../data/projects';
 
 const name = 'Michael Gilardi';
 const description =
-  'Software engineer. Mac apps, Minecraft plugins, Payload CMS plugins and frameworks for biological data, most of them free to use.';
+  'Full-stack senior software engineer with over a decade of experience. Mac apps, Minecraft plugins, Payload CMS plugins and science tools.';
+const updated = builtAt.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'America/Phoenix' });
 const year = new Date().getFullYear();
 ---
 
@@ -12,11 +13,22 @@ const year = new Date().getFullYear();
   <header class="site-header">
     <div class="wrap">
       <h1>{name}</h1>
-      <p class="lede">
-        Software engineer. My day job has mostly been full-stack Salesforce work. On my own time I
-        build small tools: Mac apps, Minecraft plugins, plugins for the Payload CMS, and
-        frameworks for biological data.
-      </p>
+      <div class="lede">
+        <p>
+          Hey there! I’m Michael Gilardi — a full-stack senior software engineer with over a decade
+          of experience. Basically, that means that I like to solve extremely complex problems and
+          throw myself down deep rabbit holes for fun.
+        </p>
+        <p>
+          I spend the majority of my days making technology do things, and my nights wondering why
+          things do what they do. I’m big into coding, genealogy, reptiles… and whatever else has
+          caught my attention this month.
+        </p>
+        <p>
+          You might even say that I have a bit of a habit of turning simple questions into
+          elaborate projects. And occasionally, they’re even useful!
+        </p>
+      </div>
       <nav aria-label="Elsewhere">
         <ul class="links">
           {links.map((l) => (
@@ -50,7 +62,7 @@ const year = new Date().getFullYear();
               <li class="card">
                 <h3><a href={p.url}>{p.name}</a></h3>
                 <p>{p.description}</p>
-                {p.facts && (
+                {p.facts.length > 0 && (
                   <ul class="facts" aria-label="Details">
                     {p.facts.map((f) => <li>{f}</li>)}
                   </ul>
@@ -66,6 +78,7 @@ const year = new Date().getFullYear();
   <footer class="site-footer">
     <div class="wrap">
       <p>© {year} {name}. Built with Astro, hosted on GitHub Pages. No tracking, no cookies.</p>
+      <p>Projects are listed from GitHub automatically. Last updated <time datetime={builtAt.toISOString()}>{updated}</time>.</p>
       <p><a href="https://github.com/mgilardi/mgilardi.github.io">Source for this site</a></p>
     </div>
   </footer>
