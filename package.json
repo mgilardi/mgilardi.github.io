@@ -1,21 +1,21 @@
 {
-  "name": "jekyll-theme-minimal-resume",
-  "version": "1.0.0",
-  "description": "This is a simple Jekyll theme for a minimal resume website.",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "name": "mgilardi-github-io",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
   },
-  "author": "Michael Gilardi <mdgilardi@gmail.com>",
-  "license": "MIT",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro check && astro build",
+    "preview": "astro preview",
+    "leak-check": "bash scripts/leak-check.sh"
+  },
   "dependencies": {
-    "browser-sync": "^2.29.1",
-    "gulp": "^4.0.2",
-    "gulp-concat": "^2.6.1",
-    "gulp-csso": "^4.0.1",
-    "gulp-imagemin": "^8.0.0",
-    "gulp-plumber": "^1.1.0",
-    "gulp-sass": "^5.1.0",
-    "gulp-uglify": "^3.0.2"
+    "astro": "^7.4.7"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.12",
+    "typescript": "^6.0.3"
   }
 }
