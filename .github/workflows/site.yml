@@ -20,11 +20,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - name: Private terms for the leak check
-        env:
-          TERMS: ${{ secrets.LEAK_TERMS }}
-        run: if [ -n "$TERMS" ]; then printf '%s\n' "$TERMS" > "$HOME/.theseus-private-terms"; fi
-      - run: bash scripts/leak-check.sh
+      - name: Leak check (emails and build output; private terms are only checked locally)
+        run: bash scripts/leak-check.sh
       - uses: actions/setup-node@v7
         with:
           node-version: 22

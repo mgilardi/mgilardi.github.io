@@ -16,12 +16,12 @@ Needs Node 22 or newer.
 npm install
 npm run dev        # local server at http://localhost:4321
 npm run build      # type-checks, then writes dist/
-npm run leak-check # scans tracked files for private terms
+npm run leak-check # emails, build output, and private terms if ~/.leak-private-terms exists
 ```
 
 ## Deploy
 
-A push to `main` runs the leak check and a build, then deploys to GitHub Pages. Pull requests run the same checks without deploying.
+A push to `main` runs the leak check (emails and build output only; private terms are checked locally) and a build, then deploys to GitHub Pages. Pull requests run the same checks without deploying.
 
 Decisions about the site are in `docs/decisions.md`.
 

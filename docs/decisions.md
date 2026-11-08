@@ -10,6 +10,6 @@ Recorded so later work follows them without asking again.
 - **npm:** linked as the `@captiveorigins` scope from the science tools and Payload plugins sections, not as a header link.
 - **Go-live:** built on a branch and previewed first. Nothing merges to `main` without the owner's OK.
 - **Name:** this is the one place the owner's personal name may appear. Family names, finances and other personal details stay out.
-- **Leak check:** `scripts/leak-check.sh` reads the private terms from outside the repo (`~/.theseus-private-terms` or `LEAK_TERMS_FILE`; the `LEAK_TERMS` secret in CI). `scripts/leak-allow.txt` lists the exact public phrases this site shows on purpose.
+- **Leak check:** `scripts/leak-check.sh` is the standard script shared by the other public repos. CI checks for non-noreply email addresses and committed build output. Private terms are checked locally only, from `LEAK_PRIVATE_TERMS` (default `~/.leak-private-terms`). They stay off GitHub, with no repo secret. `scripts/leak-allow.txt` lists the exact public phrases this site shows on purpose.
 - **Forward-only cleanup:** the committed `vendor/bundle` (91 MB) was removed and ignored. History was not rewritten.
 - **Project list:** every public project is shown for now; the owner may trim it at preview. Descriptions follow each repo's GitHub description. The One tools are "source-available", never "open source".

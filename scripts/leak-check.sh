@@ -1,38 +1,45 @@
 #!/bin/bash
-# Blocks publishing personal info. Private terms live OUTSIDE the repo, one per line:
-#   ~/.theseus-private-terms (shared with Theseus), or set LEAK_TERMS_FILE
-# Usage: scripts/leak-check.sh [--staged]   (exit 1 = leak found)
+# Blocks publishing private details. Exit 1 means something was found.
+# Always checks for email addresses that aren't noreply or placeholders (example.com, the reserved .example and .test), and for committed binaries or build output.
+# Locally it also checks for private terms. They live outside the repo, one per line, matched as whole words
+# without regard to case, in the file named by LEAK_PRIVATE_TERMS (default ~/.leak-private-terms).
+# The repo's own public names (its org, package scope, owner handle) don't belong in that file.
+# CI has no terms file, so there it runs the other checks only.
+# Lines containing a phrase from scripts/leak-allow.txt are skipped. Keep that list short and public.
 set -u
-ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-TERMS="${LEAK_TERMS_FILE:-$HOME/.theseus-private-terms}"
-cd "$ROOT"
-if [[ "${1:-}" == "--staged" ]]; then
-  FILES=$(git diff --cached --name-only --diff-filter=ACM 2>/dev/null)
+cd "$(dirname "$0")/.."
+TERMS="${LEAK_PRIVATE_TERMS:-$HOME/.leak-private-terms}"
+ALLOW=scripts/leak-allow.txt
+if git rev-parse --git-dir >/dev/null 2>&1; then
+  FILES=$(git ls-files --cached --others --exclude-standard)
 else
-  FILES=$(git ls-files 2>/dev/null || find . -type f -not -path './.git/*')
-  [[ -n "$FILES" ]] || FILES=$(find . -type f -not -path './.git/*')
+  FILES=$(find . -type f -not -path './.git/*' -not -path '*/node_modules/*' | sed 's|^\./||')
 fi
 FILES=$(echo "$FILES" | grep -v -E '(^|/)scripts/leak-(check\.sh|allow\.txt)$' || true)
-ALLOW="$ROOT/scripts/leak-allow.txt"
-allowed() {   # drop hit lines that contain an allow-listed public phrase
+[[ -n "$FILES" ]] || { echo "Leak check: nothing to scan"; exit 0; }
+allowed() {
   if [[ -f "$ALLOW" ]]; then grep -v -F -f <(grep -v -E '^\s*(#|$)' "$ALLOW") || true; else cat; fi
 }
-[[ -n "$FILES" ]] || { echo "leak-check: nothing to scan"; exit 0; }
+scan() { echo "$FILES" | tr '\n' '\0' | xargs -0 grep -I -n "$@" 2>/dev/null; }
 fail=0
 if [[ -f "$TERMS" ]]; then
-  while IFS= read -r term; do
-    [[ -z "$term" || "$term" == \#* ]] && continue
-    hits=$(echo "$FILES" | xargs grep -n -i -w -F -- "$term" 2>/dev/null | allowed || true)
-    if [[ -n "$hits" ]]; then echo "❌ private term found: '$term'"; echo "$hits" | head -5; fail=1; fi
-  done < "$TERMS"
+  pats=()
+  while IFS= read -r term; do pats+=(-e "$term"); done < <(grep -v -E '^\s*(#|$)' "$TERMS")
+  if [[ ${#pats[@]} -gt 0 ]]; then
+    # Report places only, never the term itself, so the output is safe to paste anywhere.
+    hits=$(scan -i -w -F "${pats[@]}" | allowed | cut -d: -f1,2)
+    names=$(echo "$FILES" | grep -i -w -F "${pats[@]}" | allowed)
+    if [[ -n "$hits$names" ]]; then echo "Private terms found at:"; echo "$names"; echo "$hits" | head -40; fail=1; fi
+  fi
 else
-  echo "⚠️  No private terms file at $TERMS. Create it (one term per line) so the check can protect you."
+  echo "No private terms file, so only checking for email addresses and build output."
 fi
-# Phone numbers (US-style) and email addresses that aren't obvious placeholders
-phones=$(echo "$FILES" | xargs grep -n -E '\(?\b[2-9][0-9]{2}\)?[ .-][0-9]{3}[ .-][0-9]{4}\b' 2>/dev/null | grep -v -E '555[ .-]?[0-9]{4}' || true)
-[[ -n "$phones" ]] && { echo "❌ possible phone numbers:"; echo "$phones" | head -5; fail=1; }
-emails=$(echo "$FILES" | xargs grep -I -n -o -E '[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}' 2>/dev/null \
-  | grep -v -E '@(example\.(com|org|net)|slack\.com|slack-mail\.com|anthropic\.com)' | allowed || true)
-[[ -n "$emails" ]] && { echo "❌ possible real email addresses:"; echo "$emails" | head -5; fail=1; }
-[[ $fail == 0 ]] && echo "✅ leak-check passed ($(echo "$FILES" | wc -l | tr -d ' ') files)"
+emails=$(scan -o -E '[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}' \
+  | grep -v -E '@(users\.noreply\.github\.com|example\.(com|org|net)|anthropic\.com)$|\.(example|test|invalid|localhost)$|@[0-9]+x\.(png|jpe?g|gif|webp|svg)$' \
+  | allowed)
+[[ -n "$emails" ]] && { echo "Email addresses found:"; echo "$emails" | head -20; fail=1; }
+built=$(echo "$FILES" | grep -E '\.(jar|class|zip|tgz|dmg|pkg|exe|dll|so|dylib|o|a)$|(^|/)(node_modules|dist|build|out|target|\.build|\.next|\.gradle|DerivedData)/' \
+  | grep -v -E '(^|/)gradle-wrapper\.jar$' | allowed)
+[[ -n "$built" ]] && { echo "Binaries or build output committed:"; echo "$built" | head -20; fail=1; }
+[[ $fail == 0 ]] && echo "Leak check passed ($(echo "$FILES" | wc -l | tr -d ' ') files)"
 exit $fail
