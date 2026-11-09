@@ -1,0 +1,218 @@
+# Every repo the site knows about, in one place. Edit this file by hand; the build keeps it
+# up to date and never overwrites what you set.
+#
+# categories: the sections on the page, in page order. These are the only valid values for
+#   a repo's "category". A repo goes in the first category whose "topics" (GitHub topics) or
+#   "names" (a pattern for the repo name) match it, or in the one with "default: true".
+#     title, intro   the section heading and the line under it
+#     topics         GitHub topics that put a repo here
+#     names          a name pattern, for repos named by convention
+#     chip           text shown on every card in the section, in place of the license
+#     more           a link under the intro: { label, url }
+#     default        where repos that match nothing go; the build warns about each one
+#
+# repos: one entry per repo, matched by its GitHub id, so a renamed repo keeps your settings.
+#   id, repo     GitHub's id and the current Owner/name. The build updates "repo" on a rename.
+#   show         yours: true or false, whether it appears at all
+#   category     yours: one of the categories above
+#   name         yours: the name shown on the card, if the automatic one reads wrong
+#   label        yours: a private repo's chip, in place of "Pending release"
+#   auto         the build's own guesses, rewritten on every build. Anything you set above
+#                wins over it. "gone" is the date a repo left GitHub's public list (deleted,
+#                made private or moved); it stays here, hidden, until you delete the entry.
+#
+# New public repos are added by the daily build. Private repos only appear here once you
+# choose to show them: they live in repos.private.yaml on your Mac (git-ignored). See README.
+
+categories:
+  mac:
+    title: Mac apps
+    intro: Small native apps that do one job and ask before they change anything.
+    topics: [ macos ]
+  ios:
+    title: iOS apps
+    intro: Apps for iPhone and iPad.
+    topics: [ ios, iphone, ipad ]
+  minecraft:
+    title: Minecraft plugins
+    intro: Plugins for Minecraft servers, mostly Paper.
+    topics: [ minecraft ]
+  science:
+    title: Science tools
+    intro: "The OneOrigin suite: frameworks for lineage, pedigree and taxonomy data. Source-available under PolyForm Noncommercial 1.0.0."
+    names: "^one[a-z]+$"
+    chip: Source-available
+    more: { label: "@captiveorigins on npm", url: "https://www.npmjs.com/org/captiveorigins" }
+  payload:
+    title: Payload plugins
+    intro: Plugins for the Payload CMS. The published ones are on npm under @captiveorigins.
+    topics: [ payload-plugin ]
+    more: { label: "@captiveorigins on npm", url: "https://www.npmjs.com/org/captiveorigins" }
+  other:
+    title: Other
+    intro: Everything else that is public.
+    default: true
+
+repos:
+  - id: 1440463679
+    repo: CaptiveOrigins/onepedigree
+    auto: { category: science, show: true }
+
+  - id: 1445223998
+    repo: CaptiveOrigins/onephylogeny
+    auto: { category: science, show: true }
+
+  - id: 1443619158
+    repo: CaptiveOrigins/onetaxonomy
+    auto: { category: science, show: true }
+
+  - id: 1441337150
+    repo: CaptiveOrigins/payload-plugin-masq
+    auto: { category: payload, show: true }
+
+  - id: 1443205746
+    repo: CaptiveOrigins/payload-plugin-membership
+    auto: { category: payload, show: true }
+
+  - id: 1443491321
+    repo: CaptiveOrigins/payload-plugin-menu
+    auto: { category: payload, show: true }
+
+  - id: 1441561579
+    repo: CaptiveOrigins/payload-plugin-polyglot
+    auto: { category: payload, show: true }
+
+  - id: 1439440070
+    repo: CaptiveOrigins/payload-plugin-printify
+    auto: { category: payload, show: true }
+
+  - id: 1440216740
+    repo: CaptiveOrigins/payload-plugin-roadmap
+    auto: { category: payload, show: true }
+
+  - id: 1443439350
+    repo: CaptiveOrigins/payload-plugin-roles
+    auto: { category: payload, show: true }
+
+  - id: 1444352682
+    repo: CaptiveOrigins/payload-plugin-sandbox
+    auto: { category: payload, show: true }
+
+  - id: 1442375054
+    repo: CaptiveOrigins/payload-plugin-sponsors
+    auto: { category: payload, show: true }
+
+  - id: 1445095404
+    repo: ExtantApe/ariadne
+    auto: { category: mac, show: true }
+
+  - id: 1447642448
+    repo: ExtantApe/BlueMinimap
+    auto: { category: minecraft, show: true }
+
+  - id: 1449899577
+    repo: ExtantApe/Homesteader
+    auto: { category: minecraft, show: true }
+
+  - id: 1450050983
+    repo: ExtantApe/HouseRules
+    auto: { category: minecraft, show: true }
+
+  - id: 1449895692
+    repo: ExtantApe/LanternGraves
+    auto: { category: minecraft, show: true }
+
+  - id: 1449576250
+    repo: ExtantApe/Latchkey
+    auto: { category: minecraft, show: true }
+
+  - id: 1445062967
+    repo: ExtantApe/leaf-juice
+    auto: { category: mac, show: true }
+
+  - id: 1449889767
+    repo: ExtantApe/Packmule
+    auto: { category: minecraft, show: true }
+
+  - id: 1449913736
+    repo: ExtantApe/PaulBunyan
+    auto: { category: minecraft, show: true }
+
+  - id: 1450029634
+    repo: ExtantApe/Portmanteau
+    auto: { category: minecraft, show: true }
+
+  - id: 1448950076
+    repo: ExtantApe/Preflight
+    auto: { category: minecraft, show: true }
+
+  - id: 1449906691
+    repo: ExtantApe/Rewild
+    auto: { category: minecraft, show: true }
+
+  - id: 1450692899
+    repo: ExtantApe/slothdoku
+    show: true
+    auto:
+      category: ios
+      show: false
+      private: true
+      description: "Slothdoku: an ad-free colour-region logic puzzle for iPhone and iPad starring cartoon sloths. One sloth per colour, row and column; lost lives come back by playing well."
+      topics:
+        - ios
+        - ipad
+        - iphone
+        - logic-puzzle
+        - no-ads
+        - puzzle-game
+        - sloths
+        - swiftui
+
+  - id: 1444891960
+    repo: ExtantApe/theseus
+    auto: { category: mac, show: true }
+
+  - id: 1449895181
+    repo: ExtantApe/Usher
+    auto: { category: minecraft, show: true }
+
+  - id: 1450553315
+    repo: ExtantApe/Voidwell
+    auto: { category: minecraft, show: true }
+
+  - id: 1449714908
+    repo: ExtantApe/Waystation
+    auto: { category: minecraft, show: true }
+
+  - id: 672121217
+    repo: mgilardi/feature-branch-sync
+    auto: { category: other, show: false, archived: true }
+
+  - id: 718884097
+    repo: mgilardi/jekyll-theme-minimal-resume
+    auto: { category: other, show: false, fork: true }
+
+  - id: 718897212
+    repo: mgilardi/mgilardi.github.io
+    show: false # this site's own source; linked in the footer instead
+    auto: { category: other, show: true }
+
+  - id: 114014813
+    repo: mgilardi/PantheonSiteSync
+    auto: { category: other, show: false, archived: true }
+
+  - id: 672156547
+    repo: mgilardi/pull-request-slack-notification
+    auto: { category: other, show: false, archived: true }
+
+  - id: 473270122
+    repo: mgilardi/rpilocator-slack
+    auto: { category: other, show: false, archived: true }
+
+  - id: 362572379
+    repo: mgilardi/slack-pr-open-notification-action
+    auto: { category: other, show: false, fork: true }
+
+  - id: 782796819
+    repo: mgilardi/XGP-save-extractor
+    auto: { category: other, show: false, fork: true }

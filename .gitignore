@@ -5,3 +5,5 @@ dist/
 .env
 .secrets/
 vendor/
+src/data/.generated/
+src/data/repos.private.yaml

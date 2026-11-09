@@ -5,6 +5,7 @@
 // Usage: node scripts/check-dist.mjs [dist]
 import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
 import { join } from 'node:path';
+import { parse } from 'yaml';
 import { split } from '../src/data/catalog.mjs';
 
 const dist = process.argv[2] ?? 'dist';
@@ -15,13 +16,16 @@ const problems = [];
 
 const cards = [...index.matchAll(/<li class="card"[^>]*>[\s\S]*?<\/ul>\s*<\/li>/g)].map((m) => m[0]);
 const privateCards = cards.filter((c) => /^<li class="card"[^>]*data-private/.test(c));
-const saved = JSON.parse(readFileSync('src/data/private-repos.json', 'utf8')).repos;
+// The private repos the owner shows, from the settings file, in the shape split() expects.
+const saved = (parse(readFileSync('src/data/repos.yaml', 'utf8')).repos ?? [])
+  .filter((e) => e.auto?.private)
+  .map((e) => ({ full_name: e.repo, name: e.repo.split('/')[1], description: e.auto.description, display: e.name }));
 for (const card of privateCards) {
   const name = card.match(/<h3[^>]*>([\s\S]*?)<\/h3>/)?.[1].replace(/<[^>]*>/g, "").trim();
   if (/<a\s/.test(card)) problems.push(`the private card "${name}" has a link`);
-  const repo = saved.find((r) => split(r).name === name);
+  const repo = saved.find((r) => (r.display ?? split(r).name) === name);
   if (!repo) {
-    problems.push(`the private card "${name}" doesn't match anything in private-repos.json`);
+    problems.push(`the private card "${name}" doesn't match a private repo in repos.yaml`);
     continue;
   }
   const url = `github.com/${repo.full_name}`.toLowerCase();
@@ -30,9 +34,9 @@ for (const card of privateCards) {
 
 // Every shown private repo has an unlinked card, or is public now and linked like any other.
 for (const r of saved) {
-  const card = privateCards.find((c) => c.match(/<h3[^>]*>([\s\S]*?)<\/h3>/)?.[1].replace(/<[^>]*>/g, '').trim() === split(r).name);
+  const card = privateCards.find((c) => c.match(/<h3[^>]*>([\s\S]*?)<\/h3>/)?.[1].replace(/<[^>]*>/g, '').trim() === (r.display ?? split(r).name));
   const nowPublic = index.toLowerCase().includes(`href="https://github.com/${r.full_name}"`.toLowerCase());
-  if (!card && !nowPublic) problems.push(`${r.full_name} is in private-repos.json but has no private card on the page`);
+  if (!card && !nowPublic) problems.push(`${r.full_name} is a shown private repo in repos.yaml but has no private card on the page`);
 }
 
 // The header links, as the owner chose them on 2026-11-09 (docs/decisions.md). Change this

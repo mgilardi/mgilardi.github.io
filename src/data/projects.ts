@@ -1,19 +1,13 @@
-import shownPrivate from './private-repos.json';
-import { ORGS, fetchRepos, buildGroups } from './catalog.mjs';
+import generated from './.generated/projects.json';
+import type { ProjectGroup } from './catalog.mjs';
 
-// The projects on the home page are read from GitHub at build time: every public,
-// non-fork, non-archived repo in the orgs in catalog.mjs, plus the private repos switched
-// on with `npm run private`. A scheduled workflow rebuilds the site daily, so new repos and changed
-// descriptions show up without editing anything. If GitHub can't be reached, the build fails
-// rather than publishing an empty list. The rules themselves are in catalog.mjs.
-
-/** Public repos to leave off the site anyway. Use the exact repo name. */
-const EXCLUDE = new Set<string>([]);
-
-const listed = (await Promise.all(ORGS.map((org) => fetchRepos(org, { token: process.env.GITHUB_TOKEN })))).flat();
+// The projects on the home page come from scripts/sync-repos.mjs, which runs before every build:
+// it reads GitHub's public listing, updates the settings in src/data/repos.yaml, and writes the
+// resolved list to .generated/projects.json (git-ignored). Edit repos.yaml to change a repo's
+// section or hide it; the rules are in catalog.mjs.
 
 /** Groups with at least one project, in page order. */
-export const groups = buildGroups(listed, shownPrivate.repos, EXCLUDE);
+export const groups: ProjectGroup[] = generated.groups;
 
 export const builtAt = new Date();
 
