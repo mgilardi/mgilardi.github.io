@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { buildGroups, featuredFile, fetchRepos, split } from '../src/data/catalog.mjs';
+import { buildGroups, privateFile, fetchRepos, split } from '../src/data/catalog.mjs';
 import { compareNames } from '../src/data/order.mjs';
 
 const pub = (name, extra = {}) => ({
@@ -12,22 +12,28 @@ const pub = (name, extra = {}) => ({
   license: { spdx_id: 'MIT' },
   ...extra,
 });
-const saved = (name, extra = {}) => ({ full_name: `ExampleOrg/${name}`, name, description: `${name}: secret game.`, topics: ['swiftui'], ...extra });
+const saved = (name, extra = {}) => ({ full_name: `ExampleOrg/${name}`, name, description: `${name}: secret game.`, topics: ['ios', 'swiftui'], ...extra });
 const allCards = (groups) => groups.flatMap((g) => g.projects);
 const group = (groups, id) => groups.find((g) => g.id === id);
 
-test('a featured private repo gets no link, a Private chip, and stays out of the topic sections', () => {
+test('a shown private repo goes in its own section, with no link and a Pending release chip', () => {
   const groups = buildGroups([pub('waystation', { topics: ['minecraft'] })], [saved('hidden-game')]);
-  const card = group(groups, 'featured').projects[0];
+  const card = group(groups, 'ios').projects[0];
   assert.equal(card.url, undefined);
-  assert.deepEqual(card.facts, ['Private', 'SwiftUI']);
+  assert.equal(card.private, true);
+  assert.deepEqual(card.facts, ['Pending release', 'SwiftUI']);
   assert.equal(allCards(groups).filter((p) => p.name === card.name).length, 1);
   assert.ok(!JSON.stringify(groups).includes('github.com/ExampleOrg/hidden-game'));
 });
 
+test('a saved label replaces the Pending release chip', () => {
+  const groups = buildGroups([pub('waystation')], [saved('tool', { topics: ['macos'], label: 'In use' })]);
+  assert.deepEqual(group(groups, 'mac').projects[0].facts, ['In use']);
+});
+
 test('a private repo can never carry a link, even if saved data has one', () => {
   const groups = buildGroups([pub('waystation')], [saved('hidden-game', { html_url: 'https://github.com/ExampleOrg/hidden-game' })]);
-  assert.equal(group(groups, 'featured').projects[0].url, undefined);
+  assert.equal(group(groups, 'ios').projects[0].url, undefined);
 });
 
 test('private repos in the listing are dropped, featured or not', () => {
@@ -35,15 +41,16 @@ test('private repos in the listing are dropped, featured or not', () => {
   assert.ok(!allCards(groups).some((p) => p.name === 'Leaked'));
 });
 
-test('once a featured repo is public, it is linked in Featured and listed in its own section', () => {
-  const groups = buildGroups([pub('hidden-game', { topics: ['macos', 'swiftui'] })], [saved('hidden-game')]);
-  const f = group(groups, 'featured').projects[0];
-  assert.equal(f.url, 'https://github.com/ExampleOrg/hidden-game');
-  assert.ok(!f.facts.includes('Private'));
-  assert.equal(group(groups, 'mac').projects[0].url, f.url);
+test('once a shown private repo is public, it is listed once, linked, without the chip', () => {
+  const groups = buildGroups([pub('hidden-game', { topics: ['ios', 'swiftui'] })], [saved('hidden-game')]);
+  const cards = allCards(groups).filter((p) => p.name === 'Hidden Game');
+  assert.equal(cards.length, 1);
+  assert.equal(cards[0].url, 'https://github.com/ExampleOrg/hidden-game');
+  assert.ok(!cards[0].facts.includes('Pending release'));
+  assert.equal(cards[0].private, undefined);
 });
 
-test('forks, archived, dot-repos and EXCLUDE are left off; Featured respects EXCLUDE too', () => {
+test('forks, archived, dot-repos and EXCLUDE are left off, shown private repos too', () => {
   const listed = [pub('keep'), pub('fork', { fork: true }), pub('old', { archived: true }), pub('.github'), pub('nope')];
   const groups = buildGroups(listed, [saved('nope')], new Set(['nope']));
   assert.deepEqual(allCards(groups).map((p) => p.name), ['Keep']);
@@ -73,22 +80,29 @@ test('the API is paged until a short page, and the token is sent', async () => {
   assert.equal(seen[0][1], 'Bearer t0k');
 });
 
-test('Featured comes first, sections are sorted, empty ones dropped', () => {
+test('sections come in page order, sorted, empty ones dropped, with no Featured group', () => {
   const listed = [pub('Zeta', { topics: ['minecraft'] }), pub('alpha', { topics: ['minecraft'] }), pub('The Beta', { topics: ['minecraft'] })];
-  const groups = buildGroups(listed, [saved('b-game'), saved('a-game')]);
-  assert.deepEqual(groups.map((g) => g.id), ['featured', 'minecraft']);
+  const groups = buildGroups([...listed, pub('mac-thing', { topics: ['macos'] })], [saved('b-game'), saved('a-game')]);
+  assert.deepEqual(groups.map((g) => g.id), ['mac', 'ios', 'minecraft']);
   for (const g of groups) {
     const names = g.projects.map((p) => p.name);
     assert.deepEqual([...names].sort(compareNames), names);
   }
 });
 
-test('the feature command saves only switched-on repos, private ones included', () => {
-  const repos = [pub('shown-public'), pub('shown-private', { private: true }), pub('secret', { private: true, description: 'do not publish' })];
-  const out = featuredFile(repos, new Set(['exampleorg/shown-private', 'exampleorg/shown-public']), 'note');
-  assert.deepEqual(out.repos.map((r) => r.name), ['shown-private', 'shown-public']);
+test('the private command saves only switched-on private repos, and keeps labels', () => {
+  const repos = [
+    pub('shown-private', { private: true }),
+    pub('labelled', { private: true }),
+    pub('secret', { private: true, description: 'do not publish' }),
+    pub('public-one'),
+  ];
+  const on = new Set(['exampleorg/shown-private', 'exampleorg/labelled', 'exampleorg/public-one']);
+  const out = privateFile(repos, on, 'note', [{ full_name: 'ExampleOrg/labelled', name: 'labelled', description: null, label: 'In use' }]);
+  assert.deepEqual(out.repos.map((r) => r.name), ['labelled', 'shown-private']);
   assert.ok(!JSON.stringify(out).includes('secret'));
-  assert.deepEqual(Object.keys(out.repos[0]).sort(), ['description', 'full_name', 'name', 'topics']);
+  assert.equal(out.repos[0].label, 'In use');
+  assert.deepEqual(Object.keys(out.repos[1]).sort(), ['description', 'full_name', 'name', 'topics']);
 });
 
 test('card names: own-name prefix, Payload opener, hyphenated names', () => {

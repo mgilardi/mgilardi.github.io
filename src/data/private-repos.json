@@ -1,5 +1,5 @@
 {
-  "note": "Written by `npm run feature`. Only featured repos are listed here; nothing else about private repos is stored.",
+  "note": "Written by `npm run private`. Only the private repos switched on are listed here; nothing else about private repos is stored. Optional \"label\" replaces the Pending release chip.",
   "repos": [
     {
       "full_name": "ExtantApe/slothdoku",
