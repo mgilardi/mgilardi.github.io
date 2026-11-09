@@ -15,7 +15,10 @@ const posts = await getPosts();
 <Base title={name} description={description}>
   <header class="site-header">
     <div class="wrap">
-      <h1>{name}</h1>
+      <div class="intro">
+        <img class="headshot" src="/michael.webp" width="160" height="160" alt="Michael smiling, arms crossed, in a black T-shirt" />
+        <h1>{name}</h1>
+      </div>
       <div class="lede">
         <p>
           Hey there! I’m Michael Gilardi — a full-stack senior software engineer with over a decade

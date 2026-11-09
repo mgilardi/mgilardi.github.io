@@ -44,3 +44,4 @@ Recorded so later work follows them without asking again.
 - The Captive Origins box takes its terms from the platform's approved site copy (2026-11-09: keepers, evidence, conservation, "an indication, not proof", the Roadmap). It leaves out what that copy says but the live site doesn't yet: species, prices, kits and agency credits. Revisit once the platform's copy is live.
 - More space between the Captive Origins box and the project links below it (owner, 2026-11-09).
 
+- A headshot from the owner (2026-11-09) sits beside the name and is the link-preview image. It's a 320 px WebP with all metadata stripped (no EXIF or location); the original stays off the repo.
