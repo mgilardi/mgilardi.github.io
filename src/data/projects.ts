@@ -1,4 +1,5 @@
 import { compareNames } from './order.mjs';
+import featuredFile from './featured.json';
 
 // The projects on the home page are read from GitHub at build time: every public,
 // non-fork, non-archived repo in the orgs below. A scheduled workflow rebuilds the
@@ -7,7 +8,8 @@ import { compareNames } from './order.mjs';
 
 export interface Project {
   name: string;
-  url: string;
+  /** Missing for a private repo: it can be featured, but there's no code to link to. */
+  url?: string;
   description: string;
   /** Short facts shown under the description, such as the license or platform. */
   facts: string[];
@@ -24,6 +26,7 @@ export interface ProjectGroup {
 
 interface Repo {
   name: string;
+  full_name: string;
   html_url: string;
   description: string | null;
   fork: boolean;
@@ -43,7 +46,14 @@ const npmScope = { label: '@captiveorigins on npm', url: 'https://www.npmjs.com/
 
 type GroupRule = Omit<ProjectGroup, 'projects'> & { test: (r: Repo) => boolean };
 
-// Groups in page order. A repo goes in the first group whose test it passes.
+const featuredGroup: Omit<ProjectGroup, 'projects'> = {
+  id: 'featured',
+  title: 'Featured',
+  intro:
+    "The ones I'd show you first. Ones marked Private don't have public code yet; when one goes public, it gets a link here and joins its section below.",
+};
+
+// Groups in page order, after Featured. A repo goes in the first group whose test it passes.
 const RULES: GroupRule[] = [
   {
     id: 'mac',
@@ -165,16 +175,36 @@ if (repos.length === 0) {
 }
 
 const filled: ProjectGroup[] = RULES.map(({ test: _test, ...g }) => ({ ...g, projects: [] }));
+const byFullName = new Map<string, Project>();
 for (const repo of repos) {
   const i = RULES.findIndex((g) => g.test(repo));
-  filled[i].projects.push({ ...split(repo), url: repo.html_url, facts: facts(repo, RULES[i].id) });
+  const project = { ...split(repo), url: repo.html_url, facts: facts(repo, RULES[i].id) };
+  filled[i].projects.push(project);
+  byFullName.set(repo.full_name.toLowerCase(), project);
 }
 
+// Featured repos are picked with `npm run feature` and kept in featured.json. A public one uses
+// its live card, so it's linked and current. A private one shows the name and description saved
+// when it was featured, with no link, until it goes public.
+interface SavedRepo { full_name: string; name: string; description: string | null; topics?: string[] }
+const featured: ProjectGroup = {
+  ...featuredGroup,
+  projects: (featuredFile.repos as SavedRepo[])
+    .filter((r) => !EXCLUDE.has(r.name))
+    .map((saved) => {
+      const live = byFullName.get(saved.full_name.toLowerCase());
+      if (live) return live;
+      const repo = { ...saved, topics: saved.topics ?? [] } as Repo;
+      const groupId = RULES.find((g) => g.test(repo))!.id;
+      return { ...split(repo), facts: ['Private', ...facts(repo, groupId).filter((f) => f !== 'Source-available')] };
+    }),
+};
+
 // Alphabetical within each section, so the order is the same from one build to the next.
-for (const g of filled) g.projects.sort((a, b) => compareNames(a.name, b.name));
+for (const g of [featured, ...filled]) g.projects.sort((a, b) => compareNames(a.name, b.name));
 
 /** Groups with at least one project, in page order. */
-export const groups = filled.filter((g) => g.projects.length > 0);
+export const groups = [featured, ...filled].filter((g) => g.projects.length > 0);
 
 export const builtAt = new Date();
 

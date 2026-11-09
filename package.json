@@ -10,7 +10,8 @@
     "build": "astro check && astro build && node scripts/check-order.mjs",
     "check-order": "node scripts/check-order.mjs",
     "preview": "astro preview",
-    "leak-check": "bash scripts/leak-check.sh"
+    "leak-check": "bash scripts/leak-check.sh",
+    "feature": "node scripts/feature.mjs"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.19",
