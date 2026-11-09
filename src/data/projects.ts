@@ -17,9 +17,12 @@ export const groups = buildGroups(listed, shownPrivate.repos, EXCLUDE);
 
 export const builtAt = new Date();
 
-export const links = [
+export const links: { label: string; url?: string }[] = [
   { label: 'GitHub', url: 'https://github.com/mgilardi' },
   { label: 'LinkedIn', url: 'https://www.linkedin.com/in/mdgilardi' },
   { label: 'Trailblazer', url: 'https://www.salesforce.com/trailblazer/mgilardi' },
   { label: 'ASU profile', url: 'https://search.asu.edu/profile/1467777' },
+  { label: 'YouTube', url: 'https://www.youtube.com/@ExtantApe' },
+  // Discord can't link to a profile by username; a user ID or server invite would make this a link.
+  { label: 'Discord: extantape' },
 ];

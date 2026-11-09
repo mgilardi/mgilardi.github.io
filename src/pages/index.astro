@@ -38,7 +38,7 @@ const posts = await getPosts();
       <nav aria-label="Elsewhere">
         <ul class="links">
           {links.map((l) => (
-            <li><a href={l.url} rel="me">{l.label}</a></li>
+            <li>{l.url ? <a href={l.url} rel="me">{l.label}</a> : <span>{l.label}</span>}</li>
           ))}
         </ul>
       </nav>

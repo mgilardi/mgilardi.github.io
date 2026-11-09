@@ -63,7 +63,8 @@ main:focus { outline: none; }
 .lede p { margin: 0 0 0.8rem; }
 .links, .toc ul, .cards, .facts { list-style: none; margin: 0; padding: 0; }
 .links { display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; font-weight: 600; }
-.links a { display: inline-block; padding: 0.25rem 0; }
+.links a, .links span { display: inline-block; padding: 0.25rem 0; }
+.links span { color: var(--muted); }
 
 /* Project index */
 .toc { position: sticky; top: 0; z-index: 5; background: var(--bg); border-bottom: 1px solid var(--line); margin: 0 -1.25rem; padding: 0 1.25rem; }
