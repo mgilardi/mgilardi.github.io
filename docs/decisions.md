@@ -23,3 +23,9 @@ Recorded so later work follows them without asking again.
 ## 2026-11-08: stable order
 
 - **Alphabetical within each section**, by displayed name, ignoring case and a leading "The", so the order doesn't change from one build to the next. The rule lives in `src/data/order.mjs`. `scripts/check-order.mjs` runs as part of `npm run build`, in CI too, and fails if any section on the built page is out of order. Supersedes "most recently pushed first" above.
+
+## 2026-11-08: featured section and blog
+
+- **One page.** Everything lives on the homepage. The only other pages are blog posts.
+- **Captive Origins section** near the top of the page, in its own palette (brown, cream, orange, pink from the public brand notes). High-level only: why it's needed, what it does and why the owner is the right person for it. It uses only what is already public (the live prototype site and the public One tools), never plans, prices, partners or internal details.
+- **Blog.** Posts are Markdown files in `src/content/blog/`, each with its own page at `/blog/<file-name>/`. The homepage lists them under Writing, newest first, and there's an RSS feed at `/rss.xml`. The Writing section only appears once there's a published post. `draft: true` keeps a post off the live site. `npm run dev` shows drafts, and so does a build with `SHOW_DRAFTS=1`.

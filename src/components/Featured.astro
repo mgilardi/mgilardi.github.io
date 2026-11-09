@@ -1,0 +1,130 @@
+---
+// A featured band for Captive Origins, in its own palette (brown ink, cream, orange and pink
+// from the public brand notes in the One tools). Everything here is already public: the live
+// prototype site and the public One tools. No plans, prices or partners.
+---
+
+<section class="co" aria-labelledby="co-title">
+  <div class="co-inner">
+    <p class="co-eyebrow">My life's work</p>
+    <h2 id="co-title">Captive Origins</h2>
+    <p class="co-lede">
+      A home for the records of animals in human care, starting with reptiles: what they are,
+      where their families come from, and what the sources actually say.
+    </p>
+
+    <div class="co-cols">
+      <div>
+        <h3>Why it's needed</h3>
+        <p>
+          A lot of captive animals have no reliable record of who their parents were or where
+          their line came from. What records there are sit in spreadsheets, on paper cards and in
+          people's heads, and they're lost when an animal changes hands. Guesses get passed on as
+          facts.
+        </p>
+      </div>
+      <div>
+        <h3>What it does</h3>
+        <ul class="co-list">
+          <li><strong>Taxonomy</strong> you can browse and search, in your own language.</li>
+          <li><strong>Pedigrees</strong> that keep the unknown unknown, instead of filling gaps with guesses.</li>
+          <li><strong>Lineage</strong> from genetics, with where the evidence came from and how sure it is.</li>
+          <li><strong>Sources cited</strong>, and the people who use it vote on what gets built next.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Why me</h3>
+        <p>
+          It sits where my three interests meet. A pedigree is a family tree with different animals
+          in it, and the same tools open both. Not many people are armchair genealogists, into
+          reptiles and software engineers all at once. I happen to be all three.
+        </p>
+      </div>
+    </div>
+
+    <p class="co-foot">
+      <a class="co-link" href="https://captiveorigins.com">Visit captiveorigins.com</a>
+      <span>Early days: the site is a prototype and accounts are invite-only for now. The
+      frameworks underneath are source-available, under <a href="#science">Science tools</a>.</span>
+    </p>
+  </div>
+</section>
+
+<style>
+  /* Captive Origins palette. Text pairs meet WCAG AA; orange and pink are only used for decoration. */
+  .co {
+    --co-ink: #4c312c;
+    --co-ink-soft: #5e423c;
+    --co-bg: #fbf8f2;
+    --co-card: #ffffff;
+    --co-orange: #cf8137;
+    --co-pink: #e48185;
+    --co-line: #e8dccd;
+    margin: 2.5rem 0 0;
+    background: var(--co-bg);
+    color: var(--co-ink);
+    border: 1px solid var(--co-line);
+    border-radius: 14px;
+    position: relative;
+    overflow: hidden;
+  }
+  .co::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 6px;
+    background: linear-gradient(90deg, var(--co-orange), var(--co-pink));
+  }
+  @media (prefers-color-scheme: dark) {
+    .co {
+      --co-ink: #f3e9df;
+      --co-ink-soft: #dccbbd;
+      --co-bg: #2a1e1b;
+      --co-card: #33241f;
+      --co-orange: #e7a066;
+      --co-pink: #eda9ac;
+      --co-line: #4a3530;
+    }
+  }
+  .co-inner { padding: clamp(1.5rem, 4vw, 2.5rem); }
+  .co-eyebrow {
+    margin: 0 0 0.25rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--co-ink-soft);
+  }
+  .co h2 { margin: 0 0 0.5rem; font-size: clamp(1.7rem, 4vw, 2.2rem); letter-spacing: -0.01em; }
+  .co-lede { margin: 0 0 1.75rem; max-width: 62ch; font-size: 1.1rem; }
+  .co-cols {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+  }
+  .co-cols > div {
+    background: var(--co-card);
+    border: 1px solid var(--co-line);
+    border-radius: 10px;
+    padding: 1.1rem 1.25rem;
+  }
+  .co h3 { margin: 0 0 0.5rem; font-size: 1.05rem; }
+  .co-cols p { margin: 0; }
+  .co-list { margin: 0; padding: 0; list-style: none; }
+  .co-list li { padding-left: 1.1rem; position: relative; margin-bottom: 0.45rem; }
+  .co-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.62em;
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 50%;
+    background: var(--co-orange);
+  }
+  .co a { color: var(--co-ink); text-decoration-color: var(--co-orange); text-decoration-thickness: 2px; }
+  .co a:hover { text-decoration-thickness: 3px; }
+  .co-foot { margin: 1.5rem 0 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.5rem 1.25rem; }
+  .co-foot span { color: var(--co-ink-soft); }
+  .co-link { font-weight: 700; }
+</style>

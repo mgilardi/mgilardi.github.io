@@ -1,12 +1,15 @@
 ---
 import Base from '../layouts/Base.astro';
+import Featured from '../components/Featured.astro';
 import { groups, links, builtAt } from '../data/projects';
+import { getPosts, formatDate } from '../data/posts';
 
 const name = 'Michael Gilardi';
 const description =
   'Full-stack senior software engineer with over a decade of experience. Mac apps, Minecraft plugins, Payload CMS plugins and science tools.';
 const updated = builtAt.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'America/Phoenix' });
 const year = new Date().getFullYear();
+const posts = await getPosts();
 ---
 
 <Base title={name} description={description}>
@@ -41,6 +44,31 @@ const year = new Date().getFullYear();
 
   <main id="main" tabindex="-1">
     <div class="wrap">
+      <Featured />
+
+      {posts.length > 0 && (
+        <section class="writing" id="writing" aria-labelledby="writing-title">
+          <div class="group-head">
+            <h2 id="writing-title">Writing</h2>
+            <p class="more"><a href="/rss.xml">RSS feed</a></p>
+          </div>
+          <ol class="posts">
+            {posts.map((p) => (
+              <li>
+                <time datetime={p.data.date.toISOString().slice(0, 10)}>{formatDate(p.data.date)}</time>
+                <div>
+                  <h3>
+                    <a href={`/blog/${p.id}/`}>{p.data.title}</a>
+                    {p.data.draft && <span class="draft-badge">Draft</span>}
+                  </h3>
+                  <p>{p.data.summary}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </section>
+      )}
+
       <nav class="toc" aria-label="Projects">
         <h2 class="visually-hidden">Projects</h2>
         <ul>

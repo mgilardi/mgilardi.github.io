@@ -13,6 +13,7 @@
     "leak-check": "bash scripts/leak-check.sh"
   },
   "dependencies": {
+    "@astrojs/rss": "^4.0.19",
     "astro": "^7.4.7"
   },
   "devDependencies": {
