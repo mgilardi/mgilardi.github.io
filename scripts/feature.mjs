@@ -13,8 +13,8 @@ import { execFileSync } from 'node:child_process';
 import { readFileSync, writeFileSync } from 'node:fs';
 import { emitKeypressEvents } from 'node:readline';
 import { compareNames } from '../src/data/order.mjs';
+import { ORGS, featuredFile } from '../src/data/catalog.mjs';
 
-const ORGS = ['ExtantApe', 'CaptiveOrigins'];
 const FILE = new URL('../src/data/featured.json', import.meta.url);
 
 function fetchAll() {
@@ -39,12 +39,7 @@ const key = (r) => r.full_name.toLowerCase();
 function save() {
   const known = new Set(repos.map(key));
   for (const k of on) if (!known.has(k)) console.log(`Dropped ${k}: it no longer exists or was renamed.`);
-  const out = {
-    note: saved.note,
-    repos: repos
-      .filter((r) => on.has(key(r)))
-      .map((r) => ({ full_name: r.full_name, name: r.name, description: r.description, topics: r.topics ?? [] })),
-  };
+  const out = featuredFile(repos, on, saved.note);
   writeFileSync(FILE, JSON.stringify(out, null, 2) + '\n');
   const list = out.repos.map((r) => r.name).join(', ') || 'nothing';
   console.log(`Featured: ${list}.`);

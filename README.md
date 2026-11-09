@@ -47,13 +47,14 @@ Needs Node 22 or newer.
 ```sh
 npm install
 npm run dev        # local server at http://localhost:4321
-npm run build      # type-checks, then writes dist/
+npm test           # unit tests for the project list and the feature command
+npm run build      # type-checks, writes dist/, then checks section order, private cards and drafts
 npm run leak-check # emails, build output, and private terms if ~/.leak-private-terms exists
 ```
 
 ## Deploy
 
-A push to `main` runs the leak check (emails and build output only; private terms are checked locally) and a build, then deploys to GitHub Pages. The same thing runs every morning at 06:17 Arizona time, so the project list stays current. If GitHub's API can't be reached, the build fails and the live site is left alone. Pull requests run the same checks without deploying.
+A push to `main` runs the leak check (emails and build output only; private terms are checked locally), the tests and a build, then deploys to GitHub Pages. The same thing runs every morning at 06:17 Arizona time, so the project list stays current. If GitHub's API can't be reached, the build fails and the live site is left alone. Pull requests run the same checks without deploying.
 
 Decisions about the site are in `docs/decisions.md`.
 
