@@ -1,6 +1,7 @@
 // Checks the built site for the rules that must never slip. Runs after every build.
 // - A private repo's card has no link, and that repo's GitHub URL appears nowhere in dist/.
 // - Draft posts have no page and aren't in the feed.
+// - The header shows exactly the owner's chosen links, so a removed one can't come back unnoticed.
 // Usage: node scripts/check-dist.mjs [dist]
 import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
 import { join } from 'node:path';
@@ -33,6 +34,18 @@ for (const r of saved) {
   const nowPublic = index.toLowerCase().includes(`href="https://github.com/${r.full_name}"`.toLowerCase());
   if (!card && !nowPublic) problems.push(`${r.full_name} is in private-repos.json but has no private card on the page`);
 }
+
+// The header links, as the owner chose them on 2026-11-09 (docs/decisions.md). Change this
+// list only when the owner changes the links.
+const LINKS = [
+  'https://github.com/mgilardi',
+  'https://www.linkedin.com/in/mdgilardi',
+  'https://www.salesforce.com/trailblazer/mgilardi',
+  'https://www.youtube.com/@ExtantApe',
+];
+const header = index.match(/<ul class="links"[^>]*>([\s\S]*?)<\/ul>/)?.[1] ?? '';
+const items = [...header.matchAll(/<li[^>]*>([\s\S]*?)<\/li>/g)].map((m) => m[1].match(/href="([^"]*)"/)?.[1] ?? `(no link) ${m[1].replace(/<[^>]*>/g, '').trim()}`);
+if (items.join('\n') !== LINKS.join('\n')) problems.push(`the header links are [${items.join(', ')}], expected [${LINKS.join(', ')}]`);
 
 const blog = 'src/content/blog';
 const rss = existsSync(join(dist, 'rss.xml')) ? readFileSync(join(dist, 'rss.xml'), 'utf8') : '';

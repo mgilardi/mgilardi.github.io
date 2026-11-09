@@ -5,7 +5,6 @@ mgilardi.github.io
 mgilardi-github-io
 github.com/mgilardi
 linkedin.com/in/mdgilardi
-search.asu.edu/profile/1467777
 github.com/ExtantApe
 github.com/CaptiveOrigins
 npmjs.com/org/captiveorigins
@@ -18,4 +17,3 @@ captiveorigins.com
 "full_name": "ExtantApe/
 "full_name": "CaptiveOrigins/
 youtube.com/@ExtantApe
-Discord: extantape

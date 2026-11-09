@@ -45,3 +45,9 @@ Recorded so later work follows them without asking again.
 - More space between the Captive Origins box and the project links below it (owner, 2026-11-09).
 
 - A headshot from the owner (2026-11-09) sits beside the name and is the link-preview image. It's a 320 px WebP with all metadata stripped (no EXIF or location); the original stays off the repo.
+
+## 2026-11-09: Fewer header links
+
+- The owner removed the Discord username and the university profile link from the header. The rest of the bio stays word for word.
+- `scripts/check-dist.mjs` now pins the header links to the owner's list (GitHub, LinkedIn, Trailblazer, YouTube), so a removed link can't come back without someone changing that list too.
+- The schedule's time is written in UTC, and the README and workflow no longer name a location.

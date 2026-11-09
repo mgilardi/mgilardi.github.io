@@ -41,3 +41,7 @@ Before this audit the only automated checks were the leak check, the type check 
 ## 2026-11-09: after removing Featured
 
 Featured became private repos in their own sections, so the tests above were rewritten for it (12 unit tests). New: `check-dist` also fails if a repo in `private-repos.json` has neither an unlinked card nor a public, linked one, so a broken marker can't pass silently. The checklist was re-run by hand in a pseudo-terminal. Gaps skipped are unchanged.
+
+## 2026-11-09: header links trimmed
+
+Promise added: the header shows exactly the owner's chosen links. Covered by `check-dist`, which compares the built header against a fixed list; it was checked to fail with the old links in place and pass without them. It lists the links to keep rather than naming the removed ones, so the removed details don't sit in the public repo. The same day, a manual deploy confirmed the project list picks up renamed and new repos on its own: the live page matched the 15 public, non-fork, non-archived ExtantApe repos exactly, with no duplicates or old names. Nothing is cached between builds, so no fix was needed. Gaps skipped are unchanged.
