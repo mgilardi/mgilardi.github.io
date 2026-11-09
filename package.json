@@ -11,8 +11,8 @@
     "check-order": "node scripts/check-order.mjs",
     "preview": "astro preview",
     "leak-check": "bash scripts/leak-check.sh",
-    "feature": "node scripts/feature.mjs",
-    "test": "node --test test/*.test.mjs"
+    "test": "node --test test/*.test.mjs",
+    "private": "node scripts/private.mjs"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.19",

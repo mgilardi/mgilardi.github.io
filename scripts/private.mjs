@@ -1,21 +1,24 @@
-// Pick which repos show in the Featured section, public or private.
+// Pick which private repos show on the site. Public repos are always listed; this is only for
+// private ones, such as an app that's waiting for release.
 //
-//   npm run feature              checklist: ↑/↓ to move, space to switch, enter to save, q to quit
-//   npm run feature -- list      print every repo and whether it's featured
-//   npm run feature -- on <repo>   feature a repo (name or Org/name)
-//   npm run feature -- off <repo>  stop featuring it
+//   npm run private                checklist: ↑/↓ to move, space to switch, enter to save, q to quit
+//   npm run private -- list        print every private repo and whether it's shown
+//   npm run private -- on <repo>   show a private repo (name or Org/name)
+//   npm run private -- off <repo>  hide it again
 //
-// Reads every repo in the orgs through your own `gh` sign-in, so private repos show up here
-// on your machine. Only the featured ones are written to src/data/featured.json, which is
-// public: a private repo that isn't featured is never written anywhere. Saving also refreshes
-// the saved descriptions and drops featured repos that no longer exist.
+// Reads the orgs' private repos through your own `gh` sign-in, on your machine. Only the ones
+// switched on are written to src/data/private-repos.json, which is public: a private repo that
+// isn't shown is never written anywhere. A shown one appears in its own section with no link and
+// a "Pending release" chip (set "label" on its entry to say something else). Once it goes public,
+// the build lists and links it like any other, and the next save drops it from the file. Saving
+// also refreshes the saved descriptions and drops repos that no longer exist.
 import { execFileSync } from 'node:child_process';
 import { readFileSync, writeFileSync } from 'node:fs';
 import { emitKeypressEvents } from 'node:readline';
 import { compareNames } from '../src/data/order.mjs';
-import { ORGS, featuredFile } from '../src/data/catalog.mjs';
+import { ORGS, privateFile } from '../src/data/catalog.mjs';
 
-const FILE = new URL('../src/data/featured.json', import.meta.url);
+const FILE = new URL('../src/data/private-repos.json', import.meta.url);
 
 function fetchAll() {
   const all = [];
@@ -27,7 +30,7 @@ function fetchAll() {
     for (const line of out.split('\n')) if (line.trim()) all.push(JSON.parse(line));
   }
   return all
-    .filter((r) => !r.fork && !r.archived && !r.name.startsWith('.'))
+    .filter((r) => r.private && !r.fork && !r.archived && !r.name.startsWith('.'))
     .sort((a, b) => compareNames(a.name, b.name));
 }
 
@@ -38,33 +41,33 @@ const key = (r) => r.full_name.toLowerCase();
 
 function save() {
   const known = new Set(repos.map(key));
-  for (const k of on) if (!known.has(k)) console.log(`Dropped ${k}: it no longer exists or was renamed.`);
-  const out = featuredFile(repos, on, saved.note);
+  for (const k of on) if (!known.has(k)) console.log(`Dropped ${k}: it's public now, renamed or gone.`);
+  const out = privateFile(repos, on, saved.note, saved.repos);
   writeFileSync(FILE, JSON.stringify(out, null, 2) + '\n');
   const list = out.repos.map((r) => r.name).join(', ') || 'nothing';
-  console.log(`Featured: ${list}.`);
-  console.log('Saved src/data/featured.json. Commit and push it to main to update the site.');
+  console.log(`Shown: ${list}.`);
+  console.log('Saved src/data/private-repos.json. Commit and push it to main to update the site.');
 }
 
 function find(name) {
   const n = name.toLowerCase();
   const r = repos.find((x) => key(x) === n) ?? repos.find((x) => x.name.toLowerCase() === n);
   if (!r) {
-    console.error(`No repo called "${name}" in ${ORGS.join(' or ')}.`);
+    console.error(`No private repo called "${name}" in ${ORGS.join(' or ')}. Public repos are listed automatically.`);
     process.exit(1);
   }
   return r;
 }
 
-const label = (r) => `${r.private ? 'private' : 'public '}  ${r.full_name}`;
+const label = (r) => r.full_name;
 const [cmd, arg] = process.argv.slice(2);
 
 if (cmd === 'on' || cmd === 'off') {
-  if (!arg) throw new Error(`Usage: npm run feature -- ${cmd} <repo>`);
+  if (!arg) throw new Error(`Usage: npm run private -- ${cmd} <repo>`);
   const r = find(arg);
   if (cmd === 'on') on.add(key(r));
   else on.delete(key(r));
-  if (cmd === 'on' && r.private) console.log(`Note: ${r.name} is private. Its name and description will be public:\n  ${r.description ?? '(no description)'}`);
+  if (cmd === 'on') console.log(`Note: ${r.name}'s name and description will be public:\n  ${r.description ?? '(no description)'}`);
   save();
 } else if (cmd === 'list' || !process.stdin.isTTY) {
   for (const r of repos) console.log(`${on.has(key(r)) ? '[x]' : '[ ]'} ${label(r)}`);
@@ -82,13 +85,13 @@ function checklist() {
     const rows = Math.max(5, (out.rows ?? 24) - 8);
     const top = Math.min(Math.max(0, i - Math.floor(rows / 2)), Math.max(0, repos.length - rows));
     let s = '\x1b[2J\x1b[H';
-    s += 'Featured repos. ↑/↓ move, space switches, enter saves, q quits without saving.\n\n';
+    s += 'Private repos to show on the site. ↑/↓ move, space switches, enter saves, q quits without saving.\n\n';
     repos.slice(top, top + rows).forEach((r, j) => {
       const at = top + j === i;
       s += `${at ? '›' : ' '} ${on.has(key(r)) ? '[x]' : '[ ]'} ${label(r)}\n`;
     });
     const r = repos[i];
-    s += `\n${r.private ? 'Private: if featured, this name and description go on the public site.' : 'Public: shown with a link.'}\n`;
+    s += '\nIf shown, this name and description go on the public site, with no link:\n';
     s += `${r.description ?? '(no description)'}\n`;
     out.write(s);
   };

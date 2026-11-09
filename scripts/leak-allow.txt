@@ -17,3 +17,5 @@ Captive Origins
 captiveorigins.com
 "full_name": "ExtantApe/
 "full_name": "CaptiveOrigins/
+youtube.com/@ExtantApe
+Discord: extantape

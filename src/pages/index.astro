@@ -15,7 +15,10 @@ const posts = await getPosts();
 <Base title={name} description={description}>
   <header class="site-header">
     <div class="wrap">
-      <h1>{name}</h1>
+      <div class="intro">
+        <img class="headshot" src="/michael.webp" width="160" height="160" alt="Michael smiling, arms crossed, in a black T-shirt" />
+        <h1>{name}</h1>
+      </div>
       <div class="lede">
         <p>
           Hey there! I’m Michael Gilardi — a full-stack senior software engineer with over a decade
@@ -35,7 +38,7 @@ const posts = await getPosts();
       <nav aria-label="Elsewhere">
         <ul class="links">
           {links.map((l) => (
-            <li><a href={l.url} rel="me">{l.label}</a></li>
+            <li>{l.url ? <a href={l.url} rel="me">{l.label}</a> : <span>{l.label}</span>}</li>
           ))}
         </ul>
       </nav>
@@ -87,7 +90,7 @@ const posts = await getPosts();
           </div>
           <ul class="cards">
             {g.projects.map((p) => (
-              <li class="card">
+              <li class="card" data-private={p.private ? 'true' : undefined}>
                 <h3>{p.url ? <a href={p.url}>{p.name}</a> : p.name}</h3>
                 <p>{p.description}</p>
                 {p.facts.length > 0 && (
@@ -106,7 +109,7 @@ const posts = await getPosts();
   <footer class="site-footer">
     <div class="wrap">
       <p>© {year} {name}. Built with Astro, hosted on GitHub Pages. No tracking, no cookies.</p>
-      <p>Projects are listed from GitHub automatically, apart from the private ones I choose to feature. Last updated <time datetime={builtAt.toISOString()}>{updated}</time>.</p>
+      <p>Projects are listed from GitHub automatically, plus a few private ones that aren't released yet. Last updated <time datetime={builtAt.toISOString()}>{updated}</time>.</p>
       <p><a href="https://github.com/mgilardi/mgilardi.github.io">Source for this site</a></p>
     </div>
   </footer>

@@ -7,10 +7,10 @@ import { compareNames } from './order.mjs';
  * @typedef {{ name: string, full_name: string, html_url?: string, description: string | null,
  *   fork?: boolean, archived?: boolean, private?: boolean, topics?: string[],
  *   license?: { spdx_id: string } | null }} Repo
- * @typedef {{ name: string, url?: string, description: string, facts: string[] }} Project
+ * @typedef {{ name: string, url?: string, description: string, facts: string[], private?: boolean }} Project
  * @typedef {{ id: string, title: string, intro: string, more?: { label: string, url: string },
  *   projects: Project[] }} ProjectGroup
- * @typedef {{ full_name: string, name: string, description: string | null, topics?: string[] }} SavedRepo
+ * @typedef {{ full_name: string, name: string, description: string | null, topics?: string[], label?: string }} SavedRepo
  */
 
 export const ORGS = ['ExtantApe', 'CaptiveOrigins'];
@@ -20,20 +20,19 @@ const npmScope = { label: '@captiveorigins on npm', url: 'https://www.npmjs.com/
 /** @param {Repo} r @param {string} topic */
 const has = (r, topic) => (r.topics ?? []).includes(topic);
 
-const featuredGroup = {
-  id: 'featured',
-  title: 'Featured',
-  intro:
-    "The ones I'd show you first. Ones marked Private don't have public code yet; when one goes public, it gets a link here and joins its section below.",
-};
-
-/** Groups in page order, after Featured. A repo goes in the first group whose test it passes. */
+/** Groups in page order. A repo goes in the first group whose test it passes. */
 const RULES = [
   {
     id: 'mac',
     title: 'Mac apps',
     intro: 'Small native apps that do one job and ask before they change anything.',
     /** @param {Repo} r */ test: (r) => has(r, 'macos'),
+  },
+  {
+    id: 'ios',
+    title: 'iOS apps',
+    intro: 'Apps for iPhone and iPad.',
+    /** @param {Repo} r */ test: (r) => has(r, 'ios') || has(r, 'iphone') || has(r, 'ipad'),
   },
   {
     id: 'minecraft',
@@ -136,63 +135,60 @@ function facts(repo, groupId) {
 }
 
 /**
- * Builds the page's groups: Featured first, then the topic groups, each sorted by name, empty ones
- * dropped. Only public repos from `listed` get cards in the topic groups. A featured repo that
- * isn't in `listed` is treated as private: name and description only, never a link.
+ * Builds the page's groups in order, each sorted by name, empty ones dropped. Public repos from
+ * `listed` get linked cards. A shown private repo (from private-repos.json) goes in its own
+ * section with no link and a "Pending release" chip, unless it's public now, when its live,
+ * linked card is used instead.
  * @param {Repo[]} listed what GitHub returned for the public listing
- * @param {SavedRepo[]} featured from featured.json
+ * @param {SavedRepo[]} shown from private-repos.json
  * @param {Set<string>} [exclude] repo names to leave off
  * @returns {ProjectGroup[]}
  */
-export function buildGroups(listed, featured, exclude = new Set()) {
+export function buildGroups(listed, shown, exclude = new Set()) {
   const repos = listed.filter((r) => !r.private && !r.fork && !r.archived && !r.name.startsWith('.') && !exclude.has(r.name));
   if (repos.length === 0) throw new Error('GitHub returned no public repos; refusing to build an empty project list.');
 
   /** @type {ProjectGroup[]} */
   const filled = RULES.map(({ test: _test, ...g }) => ({ ...g, projects: [] }));
-  /** @type {Map<string, Project>} */
-  const byFullName = new Map();
+  const publicNames = new Set();
   for (const repo of repos) {
     const i = RULES.findIndex((g) => g.test(repo));
-    const project = { ...split(repo), url: repo.html_url, facts: facts(repo, RULES[i].id) };
-    filled[i].projects.push(project);
-    byFullName.set(repo.full_name.toLowerCase(), project);
+    filled[i].projects.push({ ...split(repo), url: repo.html_url, facts: facts(repo, RULES[i].id) });
+    publicNames.add(repo.full_name.toLowerCase());
   }
 
-  /** @type {ProjectGroup} */
-  const feat = {
-    ...featuredGroup,
-    projects: featured
-      .filter((r) => !exclude.has(r.name))
-      .map((saved) => {
-        const live = byFullName.get(saved.full_name.toLowerCase());
-        if (live) return live;
-        // Private: build from the saved fields only, so no URL can get onto the card.
-        /** @type {Repo} */
-        const repo = { name: saved.name, full_name: saved.full_name, description: saved.description, topics: saved.topics ?? [] };
-        const groupId = /** @type {string} */ (RULES.find((g) => g.test(repo))?.id);
-        return { ...split(repo), facts: ['Private', ...facts(repo, groupId).filter((f) => f !== 'Source-available')] };
-      }),
-  };
+  for (const saved of shown) {
+    if (exclude.has(saved.name) || publicNames.has(saved.full_name.toLowerCase())) continue;
+    // Built from the saved fields only, so no URL can get onto the card.
+    /** @type {Repo} */
+    const repo = { name: saved.name, full_name: saved.full_name, description: saved.description, topics: saved.topics ?? [] };
+    const i = RULES.findIndex((g) => g.test(repo));
+    const chips = facts(repo, RULES[i].id).filter((f) => f !== 'Source-available');
+    filled[i].projects.push({ ...split(repo), facts: [saved.label || 'Pending release', ...chips], private: true });
+  }
 
-  const all = [feat, ...filled];
-  for (const g of all) g.projects.sort((a, b) => compareNames(a.name, b.name));
-  return all.filter((g) => g.projects.length > 0);
+  for (const g of filled) g.projects.sort((a, b) => compareNames(a.name, b.name));
+  return filled.filter((g) => g.projects.length > 0);
 }
 
 /**
- * What `npm run feature` saves: the featured repos only, in name order. Repos that aren't
- * featured, private or not, are never written.
- * @param {Repo[]} repos every repo the command could see
+ * What `npm run private` saves: the private repos switched on, in name order, keeping any
+ * "label" from before. Nothing else is written, so hidden private repos never reach the file.
+ * @param {Repo[]} repos the private repos the command could see
  * @param {Set<string>} on lowercase full names that are switched on
  * @param {string} note
+ * @param {SavedRepo[]} [previous] the file's entries before this save
  */
-export function featuredFile(repos, on, note) {
+export function privateFile(repos, on, note, previous = []) {
+  const labels = new Map(previous.filter((r) => r.label).map((r) => [r.full_name.toLowerCase(), r.label]));
   return {
     note,
     repos: repos
-      .filter((r) => on.has(r.full_name.toLowerCase()))
+      .filter((r) => r.private && on.has(r.full_name.toLowerCase()))
       .sort((a, b) => compareNames(a.name, b.name))
-      .map((r) => ({ full_name: r.full_name, name: r.name, description: r.description, topics: r.topics ?? [] })),
+      .map((r) => {
+        const label = labels.get(r.full_name.toLowerCase());
+        return { full_name: r.full_name, name: r.name, description: r.description, topics: r.topics ?? [], ...(label ? { label } : {}) };
+      }),
   };
 }

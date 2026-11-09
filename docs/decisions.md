@@ -37,3 +37,11 @@ Recorded so later work follows them without asking again.
 - Private repos can be featured, with name and description only and no link (Slothdoku first). Only featured repos are stored, so private repos that aren't featured never appear in the public repo. When a featured private repo goes public, the build links it and lists it in its normal section automatically.
 - The command reads private repos through the owner's local `gh` sign-in. The daily build doesn't get a token for private repos, so a private description only changes when the command is run again. A read-only token would make that automatic, but it's one more thing to renew.
 
+## 2026-11-09: No Featured section; private repos in their own sections
+
+- The owner: "the Captive Origins thing _is_ the featured one". The Featured project category is gone; the Captive Origins box is the featured piece.
+- Private repos the owner switches on (`npm run private`, saved in `src/data/private-repos.json`) go in their normal section with a "Pending release" chip and no link. Slothdoku is listed under a new iOS apps section. An optional `label` changes the chip for a repo that isn't headed for release.
+- The Captive Origins box takes its terms from the platform's approved site copy (2026-11-09: keepers, evidence, conservation, "an indication, not proof", the Roadmap). It leaves out what that copy says but the live site doesn't yet: species, prices, kits and agency credits. Revisit once the platform's copy is live.
+- More space between the Captive Origins box and the project links below it (owner, 2026-11-09).
+
+- A headshot from the owner (2026-11-09) sits beside the name and is the link-preview image. It's a 320 px WebP with all metadata stripped (no EXIF or location); the original stays off the repo.
