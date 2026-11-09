@@ -14,6 +14,8 @@ ExtantApe and CaptiveOrigins
 ['ExtantApe', 'CaptiveOrigins']
 Captive Origins
 captiveorigins.com
-"full_name": "ExtantApe/
-"full_name": "CaptiveOrigins/
 youtube.com/@ExtantApe
+repo: ExtantApe/
+repo: CaptiveOrigins/
+['orgs/ExtantApe', 'orgs/CaptiveOrigins', 'users/mgilardi']
+repo: mgilardi/

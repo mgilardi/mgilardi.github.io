@@ -44,4 +44,29 @@ Featured became private repos in their own sections, so the tests above were rew
 
 ## 2026-11-09: header links trimmed
 
-Promise added: the header shows exactly the owner's chosen links. Covered by `check-dist`, which compares the built header against a fixed list; it was checked to fail with the old links in place and pass without them. It lists the links to keep rather than naming the removed ones, so the removed details don't sit in the public repo. The same day, a manual deploy confirmed the project list picks up renamed and new repos on its own: the live page matched the 15 public, non-fork, non-archived ExtantApe repos exactly, with no duplicates or old names. Nothing is cached between builds, so no fix was needed. Gaps skipped are unchanged.
+Promise added: the header shows exactly the owner's chosen links. Covered by `check-dist`, which compares the built header against a fixed list; it was checked to fail with the old links in place and pass without them. It lists the links to keep rather than naming the removed ones, so the removed details don't sit in the public repo. The same day, a manual deploy confirmed the project list picks up renamed and new repos on its own: the live page matched all 15 public, non-fork, non-archived repos in the Minecraft and Mac org exactly, with no duplicates or old names. Nothing is cached between builds, so no fix was needed. Gaps skipped are unchanged.
+
+## 2026-11-09: settings file, categories and the daily fallback
+
+What the repo promises now, and what proves it:
+
+| Promise | Proof |
+| --- | --- |
+| Each repo lands in the right section by its topics (and the One tools by name) | unit test "each section is picked by the topics GitHub has", run against the real categories in repos.yaml; the live listing was checked by hand (below) |
+| A repo matching no category goes to Other and makes the build warn | unit test "a repo whose topics match nothing…"; seen live in the sync output before the site's own repo was hidden |
+| His values win, and the build never overwrites them | unit tests "the owner's values are never overwritten…", "no warning once the owner has chosen…", "show: false hides…" |
+| Renames are matched by id, keep his settings and comments, and show once under the new name | unit tests "a rename keeps the owner's values and comments…" and "a renamed repo shows once…" |
+| Repos that leave the list are marked gone, hidden, kept, and come back if the repo does | unit test "a repo that leaves the listing is marked gone…" and resolve's "a repo gone from the listing…" |
+| Typos fail with file and line: unknown category, unknown key, bad value, duplicate id, broken YAML, no default category, bad pattern | five validation unit tests; "the committed settings file is valid" |
+| A private repo is never in the public file unless shown; the public sync refuses private repos | unit tests "a private repo that isn't shown is refused…", "the public sync refuses a private repo outright", "private repos: hidden ones stay in the local file only…", "the committed file names no private repo that isn't shown"; check-dist on the built page; `repos.private.yaml` is git-ignored |
+| Private cards have no link; once public, linked once without the chip | unit tests carried over; check-dist |
+| An unchanged listing leaves the file byte-for-byte the same, so no empty commits | unit test "an unchanged listing…"; two local `npm run repos` runs compared with `cmp` |
+| API errors and empty listings fail closed | unit tests carried over |
+
+Checked by hand on 2026-11-09: the new build matched the live page exactly, apart from Slothdoku's description, which picked up its newer GitHub wording. All 36 public repos across the three accounts are in the file, 29 cards are shown, and the order and dist checks pass.
+
+Gaps skipped:
+
+- **The fallback schedule and the record job:** these are GitHub Actions plumbing that can't run locally. They're checked after merge: the record job on the first deploy, and the fallback whenever the 10:17 run is missed. Results go in the area notes.
+- **The interactive checklist:** removed. Editing the file replaces it.
+- Next audit due by 2026-11-23, or after the next change.

@@ -51,3 +51,14 @@ Recorded so later work follows them without asking again.
 - The owner removed the Discord username and the university profile link from the header. The rest of the bio stays word for word.
 - `scripts/check-dist.mjs` now pins the header links to the owner's list (GitHub, LinkedIn, Trailblazer, YouTube), so a removed link can't come back without someone changing that list too.
 - The schedule's time is written in UTC, and the README and workflow no longer name a location.
+
+## 2026-11-09: One settings file for every repo, and a daily build overnight
+
+- The owner wants public repos "sorted and categorized appropriately. Ideally dynamically", plus one file he can edit by hand. `src/data/repos.yaml` lists every repo in ExtantApe, CaptiveOrigins and his own account, with the categories at the top as the only valid choices. Each entry has his `show`, `category`, `name` and `label`, and the build's guesses under `auto`. His values always win, and the build never writes them.
+- Entries are matched by GitHub repo id, so renames keep their settings. Repos that leave the public list are marked `gone` with the date and hidden, never dropped. New public repos are added by the build, which commits the file after a deploy. The commit goes to `main`, which has no branch rules. Only that file is committed, and the commit re-syncs on the latest `main`, so it can't overwrite an edit made in the meantime.
+- A repo whose topics match no category goes to Other and makes the build warn. Bad values fail the build with the file and line.
+- Private repo names: all private repos go in `src/data/repos.private.yaml`, which is git-ignored and local only. Only the ones he shows are copied into the public file, with their description. Some private names describe unreleased or private work, so they stay out of the public repo, and validation refuses a hidden private entry in `repos.yaml`. This replaces `npm run private` and `private-repos.json`.
+- The site's own repo is hidden (`show: false`), since the footer already links its source. Forks and archived repos are hidden by default.
+- No order override: sections stay alphabetical, and check-order enforces it.
+- Daily build at 10:17 UTC, overnight for the owner ("Daily runs are fine"). Hourly runs were considered and dropped. The first scheduled run (13:17 UTC on 2026-11-09) never started, and GitHub gave no record or reason, so a 16:43 UTC fallback builds only when that day's scheduled run didn't succeed, with a warning.
+- The workflow no longer cancels a deploy in progress; only pull request runs are cancelled.

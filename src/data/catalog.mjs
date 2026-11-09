@@ -1,67 +1,27 @@
 // @ts-check
 // The project list's rules, kept free of network and Astro so they can be tested on their own
-// (test/catalog.test.mjs). projects.ts fetches from GitHub and passes the results in here.
+// (test/catalog.test.mjs). scripts/sync-repos.mjs fetches from GitHub, updates the settings file
+// (src/data/repos.yaml, see settings.mjs) and calls resolve() here to work out the page.
 import { compareNames } from './order.mjs';
 
 /**
- * @typedef {{ name: string, full_name: string, html_url?: string, description: string | null,
+ * @typedef {{ id: number, name: string, full_name: string, html_url?: string, description: string | null,
  *   fork?: boolean, archived?: boolean, private?: boolean, topics?: string[],
  *   license?: { spdx_id: string } | null }} Repo
+ * @typedef {{ title: string, intro: string, topics?: string[], names?: string, chip?: string,
+ *   more?: { label: string, url: string }, default?: boolean }} Category
+ * @typedef {{ category: string, show: boolean, private?: boolean, fork?: boolean, archived?: boolean,
+ *   gone?: string, description?: string | null, topics?: string[] }} Auto
+ * @typedef {{ id: number, repo: string, show?: boolean, category?: string, name?: string, label?: string,
+ *   auto?: Auto }} Entry
+ * @typedef {{ categories: Record<string, Category>, repos: Entry[] }} Settings
  * @typedef {{ name: string, url?: string, description: string, facts: string[], private?: boolean }} Project
  * @typedef {{ id: string, title: string, intro: string, more?: { label: string, url: string },
  *   projects: Project[] }} ProjectGroup
- * @typedef {{ full_name: string, name: string, description: string | null, topics?: string[], label?: string }} SavedRepo
  */
 
-export const ORGS = ['ExtantApe', 'CaptiveOrigins'];
-
-const npmScope = { label: '@captiveorigins on npm', url: 'https://www.npmjs.com/org/captiveorigins' };
-
-/** @param {Repo} r @param {string} topic */
-const has = (r, topic) => (r.topics ?? []).includes(topic);
-
-/** Groups in page order. A repo goes in the first group whose test it passes. */
-const RULES = [
-  {
-    id: 'mac',
-    title: 'Mac apps',
-    intro: 'Small native apps that do one job and ask before they change anything.',
-    /** @param {Repo} r */ test: (r) => has(r, 'macos'),
-  },
-  {
-    id: 'ios',
-    title: 'iOS apps',
-    intro: 'Apps for iPhone and iPad.',
-    /** @param {Repo} r */ test: (r) => has(r, 'ios') || has(r, 'iphone') || has(r, 'ipad'),
-  },
-  {
-    id: 'minecraft',
-    title: 'Minecraft plugins',
-    intro: 'Plugins for Minecraft servers, mostly Paper.',
-    /** @param {Repo} r */ test: (r) => has(r, 'minecraft'),
-  },
-  {
-    id: 'science',
-    title: 'Science tools',
-    intro:
-      'The OneOrigin suite: frameworks for lineage, pedigree and taxonomy data. Source-available under PolyForm Noncommercial 1.0.0.',
-    more: npmScope,
-    /** @param {Repo} r */ test: (r) => /^one[a-z]+$/.test(r.name),
-  },
-  {
-    id: 'payload',
-    title: 'Payload plugins',
-    intro: 'Plugins for the Payload CMS. The published ones are on npm under @captiveorigins.',
-    more: npmScope,
-    /** @param {Repo} r */ test: (r) => has(r, 'payload-plugin'),
-  },
-  {
-    id: 'other',
-    title: 'Other',
-    intro: 'Everything else that is public.',
-    test: () => true,
-  },
-];
+/** Where the repos come from: two orgs and the owner's own account. */
+export const OWNERS = ['orgs/ExtantApe', 'orgs/CaptiveOrigins', 'users/mgilardi'];
 
 /** Topic → the platform chip shown on a card. First match wins. */
 const PLATFORMS = [
@@ -73,24 +33,58 @@ const PLATFORMS = [
 ];
 
 /**
- * Every public repo in an org. Throws on any error, so a failed build leaves the live site alone.
- * @param {string} org
+ * Every public repo of an org (`orgs/X`) or user (`users/x`). Throws on any error, so a failed
+ * build leaves the live site alone. Private repos are dropped here, whatever the token can see.
+ * @param {string} owner
  * @param {{ fetch?: typeof fetch, token?: string }} [opts]
  * @returns {Promise<Repo[]>}
  */
-export async function fetchRepos(org, { fetch: get = fetch, token } = {}) {
+export async function fetchRepos(owner, { fetch: get = fetch, token } = {}) {
   /** @type {Record<string, string>} */
   const headers = { Accept: 'application/vnd.github+json', 'User-Agent': 'mgilardi.github.io-build' };
   if (token) headers.Authorization = `Bearer ${token}`;
+  const type = owner.startsWith('users/') ? 'owner' : 'public';
   /** @type {Repo[]} */
   const repos = [];
   for (let page = 1; ; page++) {
-    const res = await get(`https://api.github.com/orgs/${org}/repos?type=public&per_page=100&page=${page}`, { headers });
-    if (!res.ok) throw new Error(`GitHub API ${res.status} listing ${org} repos: ${await res.text()}`);
+    const res = await get(`https://api.github.com/${owner}/repos?type=${type}&per_page=100&page=${page}`, { headers });
+    if (!res.ok) throw new Error(`GitHub API ${res.status} listing ${owner} repos: ${await res.text()}`);
     const batch = /** @type {Repo[]} */ (await res.json());
-    repos.push(...batch);
+    repos.push(...batch.filter((r) => !r.private));
     if (batch.length < 100) return repos;
   }
+}
+
+/** @param {{ topics?: string[] }} r @param {string} topic */
+const has = (r, topic) => (r.topics ?? []).includes(topic);
+
+/**
+ * The category a repo's topics (or name) point to: the first category in the file whose `topics`
+ * or `names` match. `matched` is false when nothing did and the default category was used.
+ * @param {{ name: string, topics?: string[] }} repo
+ * @param {Record<string, Category>} categories
+ */
+export function guessCategory(repo, categories) {
+  for (const [id, c] of Object.entries(categories)) {
+    if ((c.topics ?? []).some((t) => has(repo, t)) || (c.names && new RegExp(c.names).test(repo.name))) return { id, matched: true };
+  }
+  const fallback = Object.entries(categories).find(([, c]) => c.default)?.[0];
+  if (!fallback) throw new Error('No category has "default: true".');
+  return { id: fallback, matched: false };
+}
+
+/**
+ * The values the build fills in for a public repo. Forks and archived repos are hidden unless the
+ * owner says otherwise.
+ * @param {Repo} repo @param {Record<string, Category>} categories
+ * @returns {Auto}
+ */
+export function autoFor(repo, categories) {
+  /** @type {Auto} */
+  const auto = { category: guessCategory(repo, categories).id, show: !repo.fork && !repo.archived };
+  if (repo.fork) auto.fork = true;
+  if (repo.archived) auto.archived = true;
+  return auto;
 }
 
 /** @param {string} s */
@@ -102,7 +96,7 @@ const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1);
  * The card's name comes from the repo name. A description that opens with the repo's own name
  * ("OnePhylogeny: a framework…") lends its spelling and loses the prefix. Payload plugins drop
  * their "Menus for Payload:" opener, since the section already says Payload.
- * @param {Repo} repo
+ * @param {{ name: string, description: string | null | undefined }} repo
  */
 export function split(repo) {
   let desc = (repo.description ?? '').trim();
@@ -117,17 +111,17 @@ export function split(repo) {
   return { name, description: capitalize(desc) || 'No description yet.' };
 }
 
-/** "leaf-juice" → "Leaf Juice". Names with capitals, like "BlueMapHUD", stay as they are. @param {string} n */
+/** "leaf-juice" → "Leaf Juice". Names with capitals, like "BlueMinimap", stay as they are. @param {string} n */
 function displayName(n) {
   if (/[A-Z]/.test(n)) return n;
   return n.split('-').map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
 }
 
-/** @param {Repo} repo @param {string} groupId */
-function facts(repo, groupId) {
+/** @param {{ topics?: string[], license?: { spdx_id: string } | null }} repo @param {string} [chip] the category's chip, in place of the license */
+function facts(repo, chip) {
   const out = [];
   const spdx = repo.license?.spdx_id;
-  if (groupId === 'science') out.push('Source-available');
+  if (chip) out.push(chip);
   else if (spdx && spdx !== 'NOASSERTION') out.push(spdx);
   const platform = PLATFORMS.find(([t]) => has(repo, t));
   if (platform) out.push(platform[1]);
@@ -135,60 +129,68 @@ function facts(repo, groupId) {
 }
 
 /**
- * Builds the page's groups in order, each sorted by name, empty ones dropped. Public repos from
- * `listed` get linked cards. A shown private repo (from private-repos.json) goes in its own
- * section with no link and a "Pending release" chip, unless it's public now, when its live,
- * linked card is used instead.
- * @param {Repo[]} listed what GitHub returned for the public listing
- * @param {SavedRepo[]} shown from private-repos.json
- * @param {Set<string>} [exclude] repo names to leave off
- * @returns {ProjectGroup[]}
+ * Works out the page from the settings and GitHub's public listing. The owner's own values
+ * (`show`, `category`, `name`, `label`) always win over the guesses.
+ * - A public repo is shown unless `show` (his, or the guess) is false. Its category is his, or
+ *   guessed from its topics. A repo whose topics match no category goes to the default one and
+ *   adds a warning, so it can't land there unnoticed.
+ * - A private repo is only in the file if he chose to show it. It gets no link and a "Pending
+ *   release" chip (or his `label`), built from the saved description only.
+ * - A repo that's gone from the listing (deleted, made private or moved) isn't shown.
+ * @param {Settings} settings
+ * @param {Repo[]} listing what GitHub returned for the public listing
+ * @returns {{ groups: ProjectGroup[], warnings: string[] }}
  */
-export function buildGroups(listed, shown, exclude = new Set()) {
-  const repos = listed.filter((r) => !r.private && !r.fork && !r.archived && !r.name.startsWith('.') && !exclude.has(r.name));
-  if (repos.length === 0) throw new Error('GitHub returned no public repos; refusing to build an empty project list.');
+export function resolve(settings, listing) {
+  const live = listing.filter((r) => !r.private);
+  if (live.length === 0) throw new Error('GitHub returned no public repos; refusing to build an empty project list.');
+  const { categories } = settings;
+  const byId = new Map(live.map((r) => [r.id, r]));
+  const entries = new Map(settings.repos.map((e) => [e.id, e]));
+  /** @type {string[]} */
+  const warnings = [];
+  /** @type {Map<string, Project[]>} */
+  const cards = new Map(Object.keys(categories).map((id) => [id, []]));
 
-  /** @type {ProjectGroup[]} */
-  const filled = RULES.map(({ test: _test, ...g }) => ({ ...g, projects: [] }));
-  const publicNames = new Set();
-  for (const repo of repos) {
-    const i = RULES.findIndex((g) => g.test(repo));
-    filled[i].projects.push({ ...split(repo), url: repo.html_url, facts: facts(repo, RULES[i].id) });
-    publicNames.add(repo.full_name.toLowerCase());
+  for (const repo of live) {
+    const e = entries.get(repo.id);
+    const auto = autoFor(repo, categories);
+    if (!(e?.show ?? auto.show)) continue;
+    const guess = guessCategory(repo, categories);
+    const category = e?.category ?? guess.id;
+    if (!e?.category && !guess.matched)
+      warnings.push(`${repo.full_name} has no topic that picks a category, so it's under "${categories[category].title}". Add a topic, or set its category in src/data/repos.yaml.`);
+    const text = split(repo);
+    cards.get(category)?.push({ ...text, name: e?.name ?? text.name, url: repo.html_url, facts: facts(repo, categories[category].chip) });
   }
 
-  for (const saved of shown) {
-    if (exclude.has(saved.name) || publicNames.has(saved.full_name.toLowerCase())) continue;
+  for (const e of settings.repos) {
+    if (byId.has(e.id)) continue;
+    if (!e.auto?.private) {
+      if (e.show) warnings.push(`${e.repo} is set to show, but it isn't in GitHub's public list any more, so it's left off.`);
+      continue;
+    }
+    if (!e.show) continue;
     // Built from the saved fields only, so no URL can get onto the card.
-    /** @type {Repo} */
-    const repo = { name: saved.name, full_name: saved.full_name, description: saved.description, topics: saved.topics ?? [] };
-    const i = RULES.findIndex((g) => g.test(repo));
-    const chips = facts(repo, RULES[i].id).filter((f) => f !== 'Source-available');
-    filled[i].projects.push({ ...split(repo), facts: [saved.label || 'Pending release', ...chips], private: true });
+    const saved = { name: e.repo.split('/')[1], description: e.auto.description ?? null, topics: e.auto.topics ?? [] };
+    const category = e.category ?? guessCategory(saved, categories).id;
+    const text = split(saved);
+    cards.get(category)?.push({
+      ...text,
+      name: e.name ?? text.name,
+      facts: [e.label || 'Pending release', ...facts(saved)],
+      private: true,
+    });
   }
 
-  for (const g of filled) g.projects.sort((a, b) => compareNames(a.name, b.name));
-  return filled.filter((g) => g.projects.length > 0);
-}
-
-/**
- * What `npm run private` saves: the private repos switched on, in name order, keeping any
- * "label" from before. Nothing else is written, so hidden private repos never reach the file.
- * @param {Repo[]} repos the private repos the command could see
- * @param {Set<string>} on lowercase full names that are switched on
- * @param {string} note
- * @param {SavedRepo[]} [previous] the file's entries before this save
- */
-export function privateFile(repos, on, note, previous = []) {
-  const labels = new Map(previous.filter((r) => r.label).map((r) => [r.full_name.toLowerCase(), r.label]));
-  return {
-    note,
-    repos: repos
-      .filter((r) => r.private && on.has(r.full_name.toLowerCase()))
-      .sort((a, b) => compareNames(a.name, b.name))
-      .map((r) => {
-        const label = labels.get(r.full_name.toLowerCase());
-        return { full_name: r.full_name, name: r.name, description: r.description, topics: r.topics ?? [], ...(label ? { label } : {}) };
-      }),
-  };
+  const groups = Object.entries(categories)
+    .map(([id, c]) => ({
+      id,
+      title: c.title,
+      intro: c.intro,
+      ...(c.more ? { more: c.more } : {}),
+      projects: (cards.get(id) ?? []).sort((a, b) => compareNames(a.name, b.name)),
+    }))
+    .filter((g) => g.projects.length > 0);
+  return { groups, warnings };
 }

@@ -2,13 +2,15 @@ name: Site
 
 # Every push and pull request runs the leak check and a full build.
 # A push to main, the daily schedule, or a manual run deploys to GitHub Pages.
-# The daily run is what picks up new public repos and changed descriptions.
+# The daily run is what picks up new public repos, renames and changed descriptions, and it
+# records new repos in src/data/repos.yaml.
 on:
   push:
     branches: [main]
   pull_request:
   schedule:
-    - cron: '17 13 * * *' # 13:17 UTC
+    - cron: '17 10 * * *' # the daily build, 10:17 UTC (overnight for the owner)
+    - cron: '43 16 * * *' # fallback, 16:43 UTC: only builds if the 10:17 run didn't succeed
   workflow_dispatch:
 
 permissions:
@@ -16,10 +18,39 @@ permissions:
 
 concurrency:
   group: pages-${{ github.ref }}
-  cancel-in-progress: true
+  # Let a deploy finish rather than cancel it halfway; pull requests can be cancelled.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
+  # GitHub sometimes delays or drops scheduled runs. The fallback run checks whether today's
+  # 10:17 run succeeded, builds only if it didn't, and says so in a warning.
+  due:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+    outputs:
+      build: ${{ steps.check.outputs.build }}
+    steps:
+      - id: check
+        env:
+          GH_TOKEN: ${{ github.token }}
+          FALLBACK: ${{ github.event.schedule == '43 16 * * *' }}
+        run: |
+          if [ "$FALLBACK" != "true" ]; then echo "build=true" >> "$GITHUB_OUTPUT"; exit 0; fi
+          since=$(date -u -d '8 hours ago' +%Y-%m-%dT%H:%M:%SZ)
+          ok=$(gh run list -R "$GITHUB_REPOSITORY" --workflow site.yml --event schedule --status success \
+            --created ">=$since" --json databaseId --jq 'length')
+          if [ "$ok" -gt 0 ]; then
+            echo "Today's 10:17 UTC run succeeded; nothing to do." >> "$GITHUB_STEP_SUMMARY"
+            echo "build=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "::warning::Today's 10:17 UTC scheduled run didn't happen or failed, so this fallback run is building the site."
+            echo "build=true" >> "$GITHUB_OUTPUT"
+          fi
+
   check:
+    needs: due
+    if: needs.due.outputs.build == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -33,7 +64,7 @@ jobs:
       - run: npm test
       - run: npm run build
         env:
-          # Lists the orgs' public repos with a higher rate limit. Read-only; never written anywhere.
+          # Lists the public repos with a higher rate limit. Read-only; never written anywhere.
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/upload-pages-artifact@v5
         if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
@@ -53,3 +84,33 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@v5
+
+  # After a deploy, record new and renamed repos in the settings file, so the owner sees every
+  # repo there. It runs the sync again on the latest main, so it never overwrites an edit the
+  # owner pushed while the build ran. Only that one file is ever committed, and a push made
+  # with this token doesn't start another run.
+  record:
+    needs: deploy
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: node scripts/sync-repos.mjs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Commit src/data/repos.yaml if it changed
+        run: |
+          if git diff --quiet -- src/data/repos.yaml; then echo "No repo changes to record."; exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add src/data/repos.yaml
+          git commit -m 'Record repo changes in the settings file' -m 'Written by the site build from the GitHub listing. Only auto values and renamed repo names change.'
+          git push || echo "::warning::Couldn't push src/data/repos.yaml (main moved?). The next build will try again."
