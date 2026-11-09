@@ -82,7 +82,7 @@ main:focus { outline: none; }
   position: relative; display: flex; flex-direction: column;
   background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 1.1rem 1.25rem;
 }
-.card:hover { border-color: var(--accent); }
+.card:has(h3 a):hover { border-color: var(--accent); }
 .card h3 { font-size: 1.15rem; margin: 0 0 0.35rem; }
 .card h3 a { text-decoration: none; }
 /* The whole card is clickable through the heading link, so screen readers hear one link per card. */

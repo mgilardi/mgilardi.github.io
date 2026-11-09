@@ -1,6 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
-import Featured from '../components/Featured.astro';
+import Spotlight from '../components/Spotlight.astro';
 import { groups, links, builtAt } from '../data/projects';
 import { getPosts, formatDate } from '../data/posts';
 
@@ -44,7 +44,7 @@ const posts = await getPosts();
 
   <main id="main" tabindex="-1">
     <div class="wrap">
-      <Featured />
+      <Spotlight />
 
       {posts.length > 0 && (
         <section class="writing" id="writing" aria-labelledby="writing-title">
@@ -88,7 +88,7 @@ const posts = await getPosts();
           <ul class="cards">
             {g.projects.map((p) => (
               <li class="card">
-                <h3><a href={p.url}>{p.name}</a></h3>
+                <h3>{p.url ? <a href={p.url}>{p.name}</a> : p.name}</h3>
                 <p>{p.description}</p>
                 {p.facts.length > 0 && (
                   <ul class="facts" aria-label="Details">
@@ -106,7 +106,7 @@ const posts = await getPosts();
   <footer class="site-footer">
     <div class="wrap">
       <p>© {year} {name}. Built with Astro, hosted on GitHub Pages. No tracking, no cookies.</p>
-      <p>Projects are listed from GitHub automatically. Last updated <time datetime={builtAt.toISOString()}>{updated}</time>.</p>
+      <p>Projects are listed from GitHub automatically, apart from the private ones I choose to feature. Last updated <time datetime={builtAt.toISOString()}>{updated}</time>.</p>
       <p><a href="https://github.com/mgilardi/mgilardi.github.io">Source for this site</a></p>
     </div>
   </footer>

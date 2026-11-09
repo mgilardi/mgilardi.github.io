@@ -1,12 +1,12 @@
 ---
-// A featured band for Captive Origins, in its own palette (brown ink, cream, orange and pink
-// from the public brand notes in the One tools). Everything here is already public: the live
+// The Captive Origins band, in its own palette (brown ink and cream, with a pink accent and
+// a little orange, from the public brand notes in the One tools). Everything here is already public: the live
 // prototype site and the public One tools. No plans, prices or partners.
 ---
 
 <section class="co" aria-labelledby="co-title">
   <div class="co-inner">
-    <p class="co-eyebrow">My life's work</p>
+    <p class="co-eyebrow">What I'm building</p>
     <h2 id="co-title">Captive Origins</h2>
     <p class="co-lede">
       A home for the records of animals in human care, starting with reptiles: what they are,
@@ -35,9 +35,14 @@
       <div>
         <h3>Why me</h3>
         <p>
-          It sits where my three interests meet. A pedigree is a family tree with different animals
-          in it, and the same tools open both. Not many people are armchair genealogists, into
-          reptiles and software engineers all at once. I happen to be all three.
+          Honestly, it's the project I was always going to end up building. I write software for a
+          living, I'm into reptiles, and I lose a lot of nights to old records chasing my own family
+          tree. At some point it clicked that a pedigree is just a family tree with scales, and the
+          tools I wanted for one would work for the other.
+        </p>
+        <p>
+          How many people are armchair genealogists <em>and</em> into reptiles <em>and</em> software engineers?
+          Probably few. I'm one of them, so I'm building it.
         </p>
       </div>
     </div>
@@ -51,7 +56,7 @@
 </section>
 
 <style>
-  /* Captive Origins palette. Text pairs meet WCAG AA; orange and pink are only used for decoration. */
+  /* Captive Origins palette. Text pairs, the pink accent included, meet WCAG AA; orange is decoration only. */
   .co {
     --co-ink: #4c312c;
     --co-ink-soft: #5e423c;
@@ -59,6 +64,7 @@
     --co-card: #ffffff;
     --co-orange: #cf8137;
     --co-pink: #e48185;
+    --co-accent: #b8405e;
     --co-line: #e8dccd;
     margin: 2.5rem 0 0;
     background: var(--co-bg);
@@ -73,7 +79,7 @@
     position: absolute;
     inset: 0 0 auto 0;
     height: 6px;
-    background: linear-gradient(90deg, var(--co-orange), var(--co-pink));
+    background: linear-gradient(90deg, var(--co-pink), var(--co-accent) 60%, var(--co-orange));
   }
   @media (prefers-color-scheme: dark) {
     .co {
@@ -83,6 +89,7 @@
       --co-card: #33241f;
       --co-orange: #e7a066;
       --co-pink: #eda9ac;
+      --co-accent: #eda9ac;
       --co-line: #4a3530;
     }
   }
@@ -93,7 +100,7 @@
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: var(--co-ink-soft);
+    color: var(--co-accent);
   }
   .co h2 { margin: 0 0 0.5rem; font-size: clamp(1.7rem, 4vw, 2.2rem); letter-spacing: -0.01em; }
   .co-lede { margin: 0 0 1.75rem; max-width: 62ch; font-size: 1.1rem; }
@@ -108,8 +115,9 @@
     border-radius: 10px;
     padding: 1.1rem 1.25rem;
   }
-  .co h3 { margin: 0 0 0.5rem; font-size: 1.05rem; }
+  .co h3 { margin: 0 0 0.5rem; font-size: 1.05rem; color: var(--co-accent); }
   .co-cols p { margin: 0; }
+  .co-cols p + p { margin-top: 0.75rem; }
   .co-list { margin: 0; padding: 0; list-style: none; }
   .co-list li { padding-left: 1.1rem; position: relative; margin-bottom: 0.45rem; }
   .co-list li::before {
@@ -120,9 +128,9 @@
     width: 0.45rem;
     height: 0.45rem;
     border-radius: 50%;
-    background: var(--co-orange);
+    background: var(--co-accent);
   }
-  .co a { color: var(--co-ink); text-decoration-color: var(--co-orange); text-decoration-thickness: 2px; }
+  .co a { color: var(--co-accent); text-decoration-color: var(--co-pink); text-decoration-thickness: 2px; }
   .co a:hover { text-decoration-thickness: 3px; }
   .co-foot { margin: 1.5rem 0 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.5rem 1.25rem; }
   .co-foot span { color: var(--co-ink-soft); }

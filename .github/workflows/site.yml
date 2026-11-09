@@ -30,6 +30,7 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      - run: npm test
       - run: npm run build
         env:
           # Lists the orgs' public repos with a higher rate limit. Read-only; never written anywhere.

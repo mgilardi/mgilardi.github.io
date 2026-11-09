@@ -16,7 +16,7 @@ if (sections.length === 0) {
 
 let failed = false;
 for (const [body, id] of sections) {
-  const names = [...body.matchAll(/<h3><a [^>]*>([^<]*)<\/a><\/h3>/g)].map((m) => decode(m[1]));
+  const names = [...body.matchAll(/<h3>(?:<a [^>]*>([^<]*)<\/a>|([^<]*))<\/h3>/g)].map((m) => decode(m[1] ?? m[2]));
   let ok = true;
   for (let i = 1; i < names.length; i++) {
     if (compareNames(names[i - 1], names[i]) > 0) {

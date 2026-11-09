@@ -29,3 +29,11 @@ Recorded so later work follows them without asking again.
 - **One page.** Everything lives on the homepage. The only other pages are blog posts.
 - **Captive Origins section** near the top of the page, in its own palette (brown, cream, orange, pink from the public brand notes). High-level only: why it's needed, what it does and why the owner is the right person for it. It uses only what is already public (the live prototype site and the public One tools), never plans, prices, partners or internal details.
 - **Blog.** Posts are Markdown files in `src/content/blog/`, each with its own page at `/blog/<file-name>/`. The homepage lists them under Writing, newest first, and there's an RSS feed at `/rss.xml`. The Writing section only appears once there's a published post. `draft: true` keeps a post off the live site. `npm run dev` shows drafts, and so does a build with `SHOW_DRAFTS=1`.
+
+## 2026-11-08: Featured repos, and Captive Origins wording
+
+- The owner's review of PR #4: keep the Captive Origins copy up to "Why me", rewrite "Why me" to sound like him, drop "My life's work" as the eyebrow, and use a pink accent in that section.
+- A Featured category comes first in the project list. The owner switches repos in or out with `npm run feature`; choices are saved in `src/data/featured.json` and persist across the daily builds.
+- Private repos can be featured, with name and description only and no link (Slothdoku first). Only featured repos are stored, so private repos that aren't featured never appear in the public repo. When a featured private repo goes public, the build links it and lists it in its normal section automatically.
+- The command reads private repos through the owner's local `gh` sign-in. The daily build doesn't get a token for private repos, so a private description only changes when the command is run again. A read-only token would make that automatic, but it's one more thing to renew.
+
