@@ -54,6 +54,10 @@ categories:
     default: true
 
 repos:
+  - id: 1453291627
+    repo: CaptiveOrigins/onelineage
+    auto: { category: science, show: true }
+
   - id: 1440463679
     repo: CaptiveOrigins/onepedigree
     auto: { category: science, show: true }
@@ -65,6 +69,14 @@ repos:
   - id: 1443619158
     repo: CaptiveOrigins/onetaxonomy
     auto: { category: science, show: true }
+
+  - id: 1453189722
+    repo: CaptiveOrigins/payload-plugin-age-gate
+    auto: { category: payload, show: true }
+
+  - id: 1453222960
+    repo: CaptiveOrigins/payload-plugin-audit-trail
+    auto: { category: payload, show: true }
 
   - id: 1452135444
     repo: CaptiveOrigins/payload-plugin-color-theory
@@ -97,6 +109,10 @@ repos:
   - id: 1443491321
     repo: CaptiveOrigins/payload-plugin-menu
     auto: { category: payload, show: true }
+
+  - id: 1453222867
+    repo: CaptiveOrigins/payload-plugin-mfa
+    auto: { category: other, show: true }
 
   - id: 1452073493
     repo: CaptiveOrigins/payload-plugin-nested-docs-browser
