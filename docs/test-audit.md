@@ -2,6 +2,18 @@
 
 What the site promises, and what proves it. Redo after each feature or fix, and at least every 14 days while the repo has commits.
 
+## 2026-11-10: the daily build and the record job, seen live
+
+The only change since 2026-11-09 is the record job's first commit (`f7e4d59`, new public repos added to `src/data/repos.yaml`). Run locally: `npm test` passes 32 of 32, `npm run build` passes, with check-order and check-dist ok, and `npm run leak-check` passes on 31 files.
+
+| Promise | Proved by | State |
+| --- | --- | --- |
+| The site rebuilds daily even when GitHub delays scheduled runs | Run 42869311810: the 10:17 UTC cron, started 7½ hours late at 17:52Z, built and deployed (`FALLBACK: false`). Run 42910087788: the 16:43 UTC fallback, started 21:58Z, found that day's success and skipped the build (`FALLBACK: true`) | Seen working, both paths |
+| New and renamed repos are recorded in the settings file without anyone touching it | The `record` job's first commit, `f7e4d59` (2026-11-10 17:53Z) | Seen working |
+| A repo with no category topic is shown under Other, with a warning | The build warns for `CaptiveOrigins/payload-plugin-mfa` | Working as designed. That repo needs a topic (its owner's call) |
+
+Still not seen: the fallback actually *building* when the 10:17 run fails. Its condition is the same check that skipped correctly today. Next audit due by 2026-11-24.
+
 ## 2026-11-08: first audit
 
 Before this audit the only automated checks were the leak check, the type check and the section-order check. This pass added `test/catalog.test.mjs` (11 unit tests, `npm test`, run in CI) and `scripts/check-dist.mjs` (runs after every build). To make the project list testable without GitHub, its logic moved from `src/data/projects.ts` to `src/data/catalog.mjs`.
