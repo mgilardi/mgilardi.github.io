@@ -66,6 +66,26 @@ repos:
     repo: CaptiveOrigins/onetaxonomy
     auto: { category: science, show: true }
 
+  - id: 1452135444
+    repo: CaptiveOrigins/payload-plugin-color-theory
+    auto: { category: payload, show: true }
+
+  - id: 1451951315
+    repo: CaptiveOrigins/payload-plugin-events
+    auto: { category: payload, show: true }
+
+  - id: 1452242019
+    repo: CaptiveOrigins/payload-plugin-hats
+    auto: { category: payload, show: true }
+
+  - id: 1450675066
+    repo: CaptiveOrigins/payload-plugin-kitting
+    auto: { category: payload, show: true }
+
+  - id: 1451746696
+    repo: CaptiveOrigins/payload-plugin-maintenance
+    auto: { category: payload, show: true }
+
   - id: 1441337150
     repo: CaptiveOrigins/payload-plugin-masq
     auto: { category: payload, show: true }
@@ -78,12 +98,20 @@ repos:
     repo: CaptiveOrigins/payload-plugin-menu
     auto: { category: payload, show: true }
 
+  - id: 1452073493
+    repo: CaptiveOrigins/payload-plugin-nested-docs-browser
+    auto: { category: payload, show: true }
+
   - id: 1441561579
     repo: CaptiveOrigins/payload-plugin-polyglot
     auto: { category: payload, show: true }
 
   - id: 1439440070
     repo: CaptiveOrigins/payload-plugin-printify
+    auto: { category: payload, show: true }
+
+  - id: 1451502395
+    repo: CaptiveOrigins/payload-plugin-restock
     auto: { category: payload, show: true }
 
   - id: 1440216740
@@ -95,12 +123,20 @@ repos:
     auto: { category: payload, show: true }
 
   - id: 1444352682
-    repo: CaptiveOrigins/payload-plugin-sandbox
+    repo: CaptiveOrigins/payload-plugin-seed
     auto: { category: payload, show: true }
 
   - id: 1442375054
     repo: CaptiveOrigins/payload-plugin-sponsors
     auto: { category: payload, show: true }
+
+  - id: 1451881672
+    repo: CaptiveOrigins/payload-plugin-whitehat
+    auto: { category: payload, show: true }
+
+  - id: 1452160518
+    repo: ExtantApe/Almanac
+    auto: { category: minecraft, show: true }
 
   - id: 1445095404
     repo: ExtantApe/ariadne
@@ -148,6 +184,10 @@ repos:
 
   - id: 1449906691
     repo: ExtantApe/Rewild
+    auto: { category: minecraft, show: true }
+
+  - id: 1451422122
+    repo: ExtantApe/Signalbox
     auto: { category: minecraft, show: true }
 
   - id: 1450692899
