@@ -2,6 +2,12 @@
 
 What the site promises, and what proves it. Redo after each feature or fix, and at least every 14 days while the repo has commits.
 
+## 2026-11-11: routine rerun
+
+No code changes since 2026-11-10: only the record job's data commit (`f2db36a`). Locally: `npm test` passes 32 of 32. `npm run build` passes, with check-order ok in every section (Payload 20, Other 3) and check-dist ok. `npm run leak-check` passes on 31 files.
+
+Seen: two more new public repos, `CaptiveOrigins/payload-plugin-labels` and `payload-plugin-signup`, have no category topic, so they're under Other with the build's warning. That's working as designed; the topics are for the Captive Origins Plugins lead to add. Next audit due by 2026-11-25.
+
 ## 2026-11-10: the daily build and the record job, seen live
 
 The only change since 2026-11-09 is the record job's first commit (`f7e4d59`, new public repos added to `src/data/repos.yaml`). Run locally: `npm test` passes 32 of 32, `npm run build` passes, with check-order and check-dist ok, and `npm run leak-check` passes on 31 files.
