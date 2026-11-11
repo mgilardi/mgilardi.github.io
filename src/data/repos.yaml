@@ -82,6 +82,10 @@ repos:
     repo: CaptiveOrigins/payload-plugin-color-theory
     auto: { category: payload, show: true }
 
+  - id: 1453672049
+    repo: CaptiveOrigins/payload-plugin-docs
+    auto: { category: other, show: true }
+
   - id: 1451951315
     repo: CaptiveOrigins/payload-plugin-events
     auto: { category: payload, show: true }
@@ -92,6 +96,10 @@ repos:
 
   - id: 1450675066
     repo: CaptiveOrigins/payload-plugin-kitting
+    auto: { category: payload, show: true }
+
+  - id: 1453468532
+    repo: CaptiveOrigins/payload-plugin-labels
     auto: { category: payload, show: true }
 
   - id: 1451746696
@@ -112,7 +120,7 @@ repos:
 
   - id: 1453222867
     repo: CaptiveOrigins/payload-plugin-mfa
-    auto: { category: other, show: true }
+    auto: { category: payload, show: true }
 
   - id: 1452073493
     repo: CaptiveOrigins/payload-plugin-nested-docs-browser
@@ -140,6 +148,10 @@ repos:
 
   - id: 1444352682
     repo: CaptiveOrigins/payload-plugin-seed
+    auto: { category: payload, show: true }
+
+  - id: 1453471434
+    repo: CaptiveOrigins/payload-plugin-signup
     auto: { category: payload, show: true }
 
   - id: 1442375054
