@@ -59,43 +59,47 @@ repos:
     auto: { category: science, show: true }
 
   - id: 1440463679
-    repo: CaptiveOrigins/onepedigree
+    repo: ExtantApe/onepedigree
     auto: { category: science, show: true }
 
   - id: 1445223998
-    repo: CaptiveOrigins/onephylogeny
+    repo: ExtantApe/onephylogeny
     auto: { category: science, show: true }
 
   - id: 1443619158
-    repo: CaptiveOrigins/onetaxonomy
+    repo: ExtantApe/onetaxonomy
     auto: { category: science, show: true }
 
   - id: 1453189722
-    repo: CaptiveOrigins/payload-plugin-age-gate
+    repo: ExtantApe/payload-plugin-age-gate
+    auto: { category: payload, show: true }
+
+  - id: 1456393913
+    repo: ExtantApe/payload-plugin-ai-budget
     auto: { category: payload, show: true }
 
   - id: 1453222960
-    repo: CaptiveOrigins/payload-plugin-audit-trail
+    repo: ExtantApe/payload-plugin-audit-trail
     auto: { category: payload, show: true }
 
   - id: 1452135444
-    repo: CaptiveOrigins/payload-plugin-color-theory
+    repo: ExtantApe/payload-plugin-color-theory
     auto: { category: payload, show: true }
 
   - id: 1453672049
-    repo: CaptiveOrigins/payload-plugin-docs
-    auto: { category: other, show: true }
+    repo: ExtantApe/payload-plugin-docs
+    auto: { category: payload, show: true }
 
   - id: 1451951315
-    repo: CaptiveOrigins/payload-plugin-events
+    repo: ExtantApe/payload-plugin-events
     auto: { category: payload, show: true }
 
   - id: 1452242019
-    repo: CaptiveOrigins/payload-plugin-hats
+    repo: ExtantApe/payload-plugin-hats
     auto: { category: payload, show: true }
 
   - id: 1450675066
-    repo: CaptiveOrigins/payload-plugin-kitting
+    repo: ExtantApe/payload-plugin-kitting
     auto: { category: payload, show: true }
 
   - id: 1453468532
@@ -103,63 +107,79 @@ repos:
     auto: { category: payload, show: true }
 
   - id: 1451746696
-    repo: CaptiveOrigins/payload-plugin-maintenance
+    repo: ExtantApe/payload-plugin-maintenance
     auto: { category: payload, show: true }
 
   - id: 1441337150
-    repo: CaptiveOrigins/payload-plugin-masq
+    repo: ExtantApe/payload-plugin-masq
     auto: { category: payload, show: true }
 
   - id: 1443205746
-    repo: CaptiveOrigins/payload-plugin-membership
+    repo: ExtantApe/payload-plugin-membership
     auto: { category: payload, show: true }
 
   - id: 1443491321
-    repo: CaptiveOrigins/payload-plugin-menu
+    repo: ExtantApe/payload-plugin-menu
     auto: { category: payload, show: true }
 
   - id: 1453222867
-    repo: CaptiveOrigins/payload-plugin-mfa
+    repo: ExtantApe/payload-plugin-mfa
     auto: { category: payload, show: true }
 
   - id: 1452073493
-    repo: CaptiveOrigins/payload-plugin-nested-docs-browser
+    repo: ExtantApe/payload-plugin-nested-docs-browser
+    auto: { category: payload, show: true }
+
+  - id: 1456394259
+    repo: ExtantApe/payload-plugin-notifications
     auto: { category: payload, show: true }
 
   - id: 1441561579
-    repo: CaptiveOrigins/payload-plugin-polyglot
+    repo: ExtantApe/payload-plugin-polyglot
     auto: { category: payload, show: true }
 
   - id: 1439440070
-    repo: CaptiveOrigins/payload-plugin-printify
+    repo: ExtantApe/payload-plugin-printify
     auto: { category: payload, show: true }
 
   - id: 1451502395
-    repo: CaptiveOrigins/payload-plugin-restock
+    repo: ExtantApe/payload-plugin-restock
     auto: { category: payload, show: true }
 
   - id: 1440216740
-    repo: CaptiveOrigins/payload-plugin-roadmap
+    repo: ExtantApe/payload-plugin-roadmap
     auto: { category: payload, show: true }
 
   - id: 1443439350
-    repo: CaptiveOrigins/payload-plugin-roles
+    repo: ExtantApe/payload-plugin-roles
+    auto: { category: payload, show: true }
+
+  - id: 1456393482
+    repo: ExtantApe/payload-plugin-scan
     auto: { category: payload, show: true }
 
   - id: 1444352682
-    repo: CaptiveOrigins/payload-plugin-seed
+    repo: ExtantApe/payload-plugin-seed
+    auto: { category: payload, show: true }
+
+  - id: 1456392848
+    repo: ExtantApe/payload-plugin-shipping
     auto: { category: payload, show: true }
 
   - id: 1453471434
-    repo: CaptiveOrigins/payload-plugin-signup
+    repo: ExtantApe/payload-plugin-signup
     auto: { category: payload, show: true }
 
   - id: 1442375054
-    repo: CaptiveOrigins/payload-plugin-sponsors
+    repo: ExtantApe/payload-plugin-sponsors
+    auto: { category: payload, show: true }
+
+  - id: 1456389987
+    repo: ExtantApe/payload-plugin-watchlist
     auto: { category: payload, show: true }
 
   - id: 1451881672
-    repo: CaptiveOrigins/payload-plugin-whitehat
+    repo: ExtantApe/payload-plugin-whitehat
     auto: { category: payload, show: true }
 
   - id: 1452160518
@@ -201,6 +221,10 @@ repos:
   - id: 1449913736
     repo: ExtantApe/PaulBunyan
     auto: { category: minecraft, show: true }
+
+  - id: 1456392457
+    repo: ExtantApe/payload-plugin-wizards
+    auto: { category: payload, show: true }
 
   - id: 1450029634
     repo: ExtantApe/Portmanteau
