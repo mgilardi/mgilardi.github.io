@@ -55,11 +55,15 @@ categories:
 
 repos:
   - id: 1457499013
-    repo: ExtantApe/Fieldnotes
+    repo: ExtantApe/FieldNotes
     auto: { category: minecraft, show: true }
 
   - id: 1453434598
-    repo: ExtantApe/Mapkeeper
+    repo: ExtantApe/BlueMapAuth
+    auto: { category: minecraft, show: true }
+
+  - id: 1458526700
+    repo: ExtantApe/MobSquad
     auto: { category: minecraft, show: true }
 
   - id: 1453291627
@@ -199,7 +203,7 @@ repos:
     auto: { category: payload, show: true }
 
   - id: 1452160518
-    repo: ExtantApe/Almanac
+    repo: ExtantApe/Sundial
     auto: { category: minecraft, show: true }
 
   - id: 1445095404
@@ -207,7 +211,7 @@ repos:
     auto: { category: mac, show: true }
 
   - id: 1447642448
-    repo: ExtantApe/BlueMinimap
+    repo: ExtantApe/BlueMapMini
     auto: { category: minecraft, show: true }
 
   - id: 1449899577
@@ -215,7 +219,7 @@ repos:
     auto: { category: minecraft, show: true }
 
   - id: 1450050983
-    repo: ExtantApe/HouseRules
+    repo: ExtantApe/Mayor
     auto: { category: minecraft, show: true }
 
   - id: 1449895692
@@ -223,7 +227,7 @@ repos:
     auto: { category: minecraft, show: true }
 
   - id: 1449576250
-    repo: ExtantApe/Latchkey
+    repo: ExtantApe/WelcomeWagon
     auto: { category: minecraft, show: true }
 
   - id: 1445062967
@@ -285,11 +289,11 @@ repos:
     auto: { category: mac, show: true }
 
   - id: 1449895181
-    repo: ExtantApe/Usher
+    repo: ExtantApe/Sheriff
     auto: { category: minecraft, show: true }
 
   - id: 1450553315
-    repo: ExtantApe/Voidwell
+    repo: ExtantApe/OneVoid
     auto: { category: minecraft, show: true }
 
   - id: 1449714908
