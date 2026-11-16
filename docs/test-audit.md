@@ -2,6 +2,17 @@
 
 What the site promises, and what proves it. Redo after each feature or fix, and at least every 14 days while the repo has commits.
 
+## 2026-11-15: routine audit, and the One tools back in Science tools
+
+Since 2026-11-11 only the record job's data commits changed anything (`70d096f`, `35620ff`, `a6beb91`). Locally: `npm test` passes 32 of 32, `npm run build` passes with check-order and check-dist ok, and `npm run leak-check` passes on 31 files.
+
+- Promises: as in the tables below. Nothing new.
+- Found: the One tools had dropped out of Science tools. They moved to ExtantApe with capitalized names (D179), and the category's name pattern only matched lowercase names, so OnePedigree, OnePhylogeny and OneTaxonomy fell to Payload plugins by their topics, and OneFamily fell to Other with a build warning. The existing test only tried a lowercase name, so it kept passing.
+- Gaps added: the pattern in `src/data/repos.yaml` now matches either case (`^[Oo]ne[A-Za-z]+$`). "each section is picked by the topics GitHub has" now also checks OnePedigree with a Payload topic and OneFamily with no topics land in Science tools, and that OneVoid, a Minecraft plugin, stays a Minecraft plugin because that category comes first. Checked to fail without the fix. The build now shows Science tools (4) and no Other section, with no warnings.
+- Gaps skipped (and why): unchanged from 2026-11-09. The Science tools intro still describes only lineage, pedigree and taxonomy data, and its npm link still points to the old npm org. Both are copy for the owner and the lead, not a test gap.
+
+Next audit due by 2026-11-29.
+
 ## 2026-11-11: routine rerun
 
 No code changes since 2026-11-10: only the record job's data commit (`f2db36a`). Locally: `npm test` passes 32 of 32. `npm run build` passes, with check-order ok in every section (Payload 20, Other 3) and check-dist ok. `npm run leak-check` passes on 31 files.

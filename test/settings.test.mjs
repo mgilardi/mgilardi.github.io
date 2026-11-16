@@ -52,7 +52,7 @@ test('broken YAML fails with a line number', () => {
 test('the categories need exactly one default, and valid names patterns', () => {
   const noDefault = file().replace('    default: true\n', '');
   assert.match(load(noDefault, 'f.yaml').errors.join(), /exactly one category needs "default: true"/);
-  const badPattern = file().replace('names: "^one[a-z]+$"', 'names: "(("');
+  const badPattern = file().replace('names: "^[Oo]ne[A-Za-z]+$"', 'names: "(("');
   assert.match(load(badPattern, 'f.yaml').errors.join(), /names isn't a valid pattern/);
 });
 
