@@ -41,6 +41,11 @@ test('each section is picked by the topics GitHub has', () => {
   ];
   for (const [topics, want] of cases) assert.equal(guessCategory({ name: 'thing', topics }, categories).id, want, topics.join(','));
   assert.equal(guessCategory({ name: 'onetaxonomy', topics: ['payload-plugin'] }, categories).id, 'science');
+  // The One tools moved to ExtantApe with capitalized names (D179). They still go to Science tools,
+  // even with Payload topics or none, while a Minecraft plugin that starts with One stays a plugin.
+  assert.equal(guessCategory({ name: 'OnePedigree', topics: ['payload'] }, categories).id, 'science');
+  assert.equal(guessCategory({ name: 'OneFamily', topics: [] }, categories).id, 'science');
+  assert.equal(guessCategory({ name: 'OneVoid', topics: ['minecraft'] }, categories).id, 'minecraft');
 });
 
 test('a repo whose topics match nothing goes to Other and makes the build warn', () => {

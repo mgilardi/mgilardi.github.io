@@ -40,7 +40,7 @@ categories:
   science:
     title: Science tools
     intro: "The OneOrigin suite: frameworks for lineage, pedigree and taxonomy data. Source-available under PolyForm Noncommercial 1.0.0."
-    names: "^one[a-z]+$"
+    names: "^[Oo]ne[A-Za-z]+$"
     chip: Source-available
     more: { label: "@captiveorigins on npm", url: "https://www.npmjs.com/org/captiveorigins" }
   payload:
@@ -68,19 +68,19 @@ repos:
 
   - id: 1453291627
     repo: ExtantApe/OneFamily
-    auto: { category: other, show: true }
+    auto: { category: science, show: true }
 
   - id: 1440463679
     repo: ExtantApe/OnePedigree
-    auto: { category: payload, show: true }
+    auto: { category: science, show: true }
 
   - id: 1445223998
     repo: ExtantApe/OnePhylogeny
-    auto: { category: payload, show: true }
+    auto: { category: science, show: true }
 
   - id: 1443619158
     repo: ExtantApe/OneTaxonomy
-    auto: { category: payload, show: true }
+    auto: { category: science, show: true }
 
   - id: 1453189722
     repo: ExtantApe/payload-plugin-age-gate
