@@ -18,6 +18,15 @@ test('the committed file names no private repo that isn\'t shown', () => {
   for (const e of data.repos) if (e.auto?.private) assert.equal(e.show, true, e.repo);
 });
 
+test('section links are https, and npm links point at the current npm org', () => {
+  const urls = CATS.split('\n').filter((l) => l.includes('url: ')).map((l) => l.split('url: ')[1].split('"')[1]);
+  assert.ok(urls.length > 0);
+  for (const u of urls) assert.match(u, /^https:\/\//, u);
+  const npm = urls.filter((u) => u.includes('npmjs.com'));
+  assert.ok(npm.length > 0);
+  for (const u of npm) assert.equal(u, 'https://www.npmjs.com/org/extantape');
+});
+
 test('a typo in a category fails with the file, line and the valid choices', () => {
   const text = file('\n  - id: 1\n    repo: ExampleOrg/a\n    category: minecrft\n');
   const { errors } = load(text, 'src/data/repos.yaml');

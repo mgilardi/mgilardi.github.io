@@ -2,6 +2,17 @@
 
 What the site promises, and what proves it. Redo after each feature or fix, and at least every 14 days while the repo has commits.
 
+## 2026-11-21: routine audit, and the npm links moved
+
+Since 2026-11-15: the record job's data commits, and `1212927`, which points both sections' npm links at the current npm org. Locally: `npm test` passes 33 of 33, `npm run build` passes with check-order ok (Minecraft 19, Science 4, Payload 33) and check-dist ok, and `npm run leak-check` passes on 31 files.
+
+- Promises: as in the tables below, plus the npm links naming the right org.
+- Covered: the build's own checks (check-order, check-dist), the catalog tests (sections by topic, private repos never linked, empty or failed listings fail the build) and the settings tests, unchanged.
+- Gaps added: the 2026-11-15 audit flagged the npm link pointing at the old org as copy, not a test gap. Now that it's fixed, "section links are https, and npm links point at the current npm org" in `test/settings.test.mjs` keeps it from drifting back.
+- Gaps skipped (and why): the Science tools intro still describes only lineage, pedigree and taxonomy data. That's copy for the owner, not a test gap. Whether the npm org page itself loads isn't tested, because npmjs.com refuses automated requests (403).
+
+Next audit due by 2026-12-05.
+
 ## 2026-11-15: routine audit, and the One tools back in Science tools
 
 Since 2026-11-11 only the record job's data commits changed anything (`70d096f`, `35620ff`, `a6beb91`). Locally: `npm test` passes 32 of 32, `npm run build` passes with check-order and check-dist ok, and `npm run leak-check` passes on 31 files.
