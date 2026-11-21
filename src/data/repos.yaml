@@ -94,8 +94,16 @@ repos:
     repo: ExtantApe/payload-plugin-audit-trail
     auto: { category: payload, show: true }
 
+  - id: 1464319394
+    repo: ExtantApe/payload-plugin-cache-refresh
+    auto: { category: payload, show: true }
+
   - id: 1452135444
     repo: ExtantApe/payload-plugin-color-theory
+    auto: { category: payload, show: true }
+
+  - id: 1460725111
+    repo: ExtantApe/payload-plugin-contact-tiles
     auto: { category: payload, show: true }
 
   - id: 1453672049
