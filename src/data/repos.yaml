@@ -42,12 +42,12 @@ categories:
     intro: "The OneOrigin suite: frameworks for lineage, pedigree and taxonomy data. Source-available under PolyForm Noncommercial 1.0.0."
     names: "^[Oo]ne[A-Za-z]+$"
     chip: Source-available
-    more: { label: "@captiveorigins on npm", url: "https://www.npmjs.com/org/captiveorigins" }
+    more: { label: "@extantape on npm", url: "https://www.npmjs.com/org/extantape" }
   payload:
     title: Payload plugins
-    intro: Plugins for the Payload CMS. The published ones are on npm under @captiveorigins.
+    intro: Plugins for the Payload CMS. The published ones are on npm under @extantape.
     topics: [ payload-plugin ]
-    more: { label: "@captiveorigins on npm", url: "https://www.npmjs.com/org/captiveorigins" }
+    more: { label: "@extantape on npm", url: "https://www.npmjs.com/org/extantape" }
   other:
     title: Other
     intro: Everything else that is public.

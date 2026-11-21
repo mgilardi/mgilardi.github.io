@@ -8,6 +8,7 @@ Recorded so later work follows them without asking again.
 - **Astro**, static output only, no client-side JavaScript. Deployed by `.github/workflows/site.yml` to GitHub Pages. The Pages source has to be set to "GitHub Actions" when this first merges.
 - **Links kept:** GitHub, LinkedIn, Salesforce Trailblazer, university profile. The old business link was dropped.
 - **npm:** linked as the `@captiveorigins` scope from the science tools and Payload plugins sections, not as a header link.
+- 2026-11-21: the npm links point at the `@extantape` scope, where the plugins and science packages are now published.
 - **Go-live:** built on a branch and previewed first. Nothing merges to `main` without the owner's OK.
 - **Name:** this is the one place the owner's personal name may appear. Family names, finances and other personal details stay out.
 - **Leak check:** `scripts/leak-check.sh` is the standard script shared by the other public repos. CI checks for non-noreply email addresses and committed build output. Private terms are checked locally only, from `LEAK_PRIVATE_TERMS` (default `~/.leak-private-terms`). They stay off GitHub, with no repo secret. `scripts/leak-allow.txt` lists the exact public phrases this site shows on purpose.
