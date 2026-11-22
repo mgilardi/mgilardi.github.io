@@ -158,6 +158,10 @@ repos:
     repo: ExtantApe/payload-plugin-notifications
     auto: { category: payload, show: true }
 
+  - id: 1467795633
+    repo: ExtantApe/payload-plugin-organizations
+    auto: { category: payload, show: true }
+
   - id: 1441561579
     repo: ExtantApe/payload-plugin-polyglot
     auto: { category: payload, show: true }
