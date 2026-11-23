@@ -62,12 +62,20 @@ repos:
     repo: ExtantApe/BlueMapAuth
     auto: { category: minecraft, show: true }
 
+  - id: 1468031493
+    repo: ExtantApe/lighthouse-template
+    auto: { category: other, show: true }
+
   - id: 1458526700
     repo: ExtantApe/MobSquad
     auto: { category: minecraft, show: true }
 
   - id: 1453291627
     repo: ExtantApe/OneFamily
+    auto: { category: science, show: true }
+
+  - id: 1468214220
+    repo: ExtantApe/OneLineage
     auto: { category: science, show: true }
 
   - id: 1440463679
@@ -81,6 +89,10 @@ repos:
   - id: 1443619158
     repo: ExtantApe/OneTaxonomy
     auto: { category: science, show: true }
+
+  - id: 1468307492
+    repo: ExtantApe/ops-kit
+    auto: { category: other, show: true }
 
   - id: 1453189722
     repo: ExtantApe/payload-plugin-age-gate
@@ -166,6 +178,10 @@ repos:
     repo: ExtantApe/payload-plugin-polyglot
     auto: { category: payload, show: true }
 
+  - id: 1468359119
+    repo: ExtantApe/payload-plugin-positions
+    auto: { category: payload, show: true }
+
   - id: 1439440070
     repo: ExtantApe/payload-plugin-printify
     auto: { category: payload, show: true }
@@ -192,6 +208,10 @@ repos:
 
   - id: 1444352682
     repo: ExtantApe/payload-plugin-seed
+    auto: { category: payload, show: true }
+
+  - id: 1468358523
+    repo: ExtantApe/payload-plugin-sharing
     auto: { category: payload, show: true }
 
   - id: 1456392848
