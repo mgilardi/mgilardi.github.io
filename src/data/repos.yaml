@@ -251,7 +251,7 @@ repos:
     auto: { category: minecraft, show: true }
 
   - id: 1450050983
-    repo: ExtantApe/Mayor
+    repo: ExtantApe/Posse
     auto: { category: minecraft, show: true }
 
   - id: 1449895692
