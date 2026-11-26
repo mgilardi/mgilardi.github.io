@@ -94,6 +94,10 @@ repos:
     repo: ExtantApe/ops-kit
     auto: { category: other, show: true }
 
+  - id: 1473591845
+    repo: ExtantApe/payload-plugin-admin-theme
+    auto: { category: payload, show: true }
+
   - id: 1453189722
     repo: ExtantApe/payload-plugin-age-gate
     auto: { category: payload, show: true }
@@ -224,6 +228,10 @@ repos:
 
   - id: 1442375054
     repo: ExtantApe/payload-plugin-sponsors
+    auto: { category: payload, show: true }
+
+  - id: 1472518754
+    repo: ExtantApe/payload-plugin-stats
     auto: { category: payload, show: true }
 
   - id: 1456389987
